@@ -1,4 +1,3 @@
-import ReactDOM from "react-dom";
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -46,6 +45,7 @@ require('./bootstrap');
 
 
 import React from 'react';
+import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import UserContent from './components/Users/UserContent';
