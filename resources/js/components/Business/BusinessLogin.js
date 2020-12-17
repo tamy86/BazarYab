@@ -1,6 +1,7 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
 import BusinessLoginForm from '../SubComponents/business/BusinessLoginForm';
+import BusinessAlerts from '../SubComponents/business/BusinessAlertShow';
 
 
 const userLoginStyle={
@@ -10,7 +11,7 @@ const userLoginStyle={
     direction:'rtl',
     marginTop:'0px',
     paddingTop:'50px',
-    padding:'80px 0',
+    padding:'30px 0',
 };
 
 function BusinessLogin(){
@@ -31,3 +32,4 @@ function BusinessLogin(){
 }
 
 export default BusinessLogin;
+

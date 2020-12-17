@@ -4,8 +4,14 @@ import TextField from '@material-ui/core/TextField';
 import MobileFriendly from '@material-ui/icons/MobileFriendly';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import Button from '@material-ui/core/Button';
-
 import { makeStyles } from '@material-ui/core/styles';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import axios from 'axios';
+import BusinessAlerts from "./BusinessAlertShow";
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -68,12 +74,90 @@ const spaceBetwenButton={
     paddingTop:'40px',
 };
 
+const selectStyleLabel={
+    float: 'right',
+    marginTop: '55px',
+
+};
+const selectStyle={
+width:'100%',
+    direction: 'rtl',
+    fontFamily:'IRANSans',
+};
+
+
+
 function BusinessLoginForm(){
 
     const classes = useStyles();
 
+    const [bussinesstype, setBusinesstype] = React.useState();
+    const [categoryname, setCategoryname]=React.useState([]);
+    const [loading,setLoading]=React.useState(true);
+    const [loginbuttondisabled,setLoginbuttondisabled]=React.useState(true);
+    const [phonevalue,setPhonevalue]=React.useState('');
+    const [showerror,setShowerror]=React.useState(false);
+    const [errormessage,setErrormesasage]=React.useState('');
+
+
+if(loading) {
+    axios.get('/api/business/businesslist').then(res => {
+
+        setCategoryname(res.data);
+
+        setLoading(false);
+    })
+}
+
+
+    const handleChange = (event) => {
+        setBusinesstype(event.target.value);
+    };
+
+
+
+function  reciveSmsCode  () {
+
+    const mobile = /(0|\+98)?([ ]|,|-|[()]){0,2}9[1|2|3|4]([ ]|,|-|[()]){0,2}(?:[0-9]([ ]|,|-|[()]){0,2}){8}/g;
+    const result = phonevalue.match(mobile);
+
+    if ((phonevalue !== '') && (result))
+    {
+        //handel to show error alert many times
+        setErrormesasage(
+            {
+                msg:'کد اعتبار سنجی به شماره همراه ارسال شد',
+                key:Math.random(),
+                errortype:'success'
+            });
+        //handel to show error alert
+
+        setShowerror(true);
+        setLoginbuttondisabled(false);
+
+
+    }
+    else{
+        setLoginbuttondisabled(true);
+
+        setErrormesasage(
+            {
+                msg:'شماره همراه وارد شده صحیح نمی باشد',
+                key:Math.random(),
+                errortype:'warning'
+            });
+
+        setShowerror(true);
+    }
+}
+
+
     return(
         <Container  style={styleBgForm}>
+
+            {showerror ?
+                <BusinessAlerts key={errormessage.key} errormessage={errormessage.msg} errortype={errormessage.errortype}/>:null
+            }
 
             <div className="card-header" style={headerLoginForm}>
                 وروود کسب و کار <MobileFriendly style={mobileIconStyle}/>
@@ -83,27 +167,59 @@ function BusinessLoginForm(){
                 <TextField
                     id="businessMobileNo"
                     label="تلفن همراه"
+                    onChange={event=>setPhonevalue(event.target.value)}
+                    value={phonevalue}
                 />
                 <TextField
                     id="businessVerifyCode"
                     label="کد اعتبار سنجی"
                 />
+
+                <InputLabel id="businessKind" style={selectStyleLabel}>{bussinesstype}کسب و کار</InputLabel>
+
+                <Select
+                    labelId="businessKind"
+                    id='businessKind'
+                    value={bussinesstype}
+                    onChange={handleChange}
+                    style={selectStyle}>
+
+
+
+                    {categoryname.map(cate=>{
+
+                 return(
+                     <MenuItem key={cate.id} value={cate.id}>{cate.category_name}</MenuItem>
+                 )
+
+
+                    })}
+
+
+                </Select>
                 <div style={spaceBetwenButton}>
-                    <Button variant="outlined" color="primary" style={styleButton}>
+                    <Button variant="outlined" color="primary" style={styleButton} onClick={reciveSmsCode}>
                         دریافت کد اعتبار سنجی  <MobileFriendly/>
                     </Button>
                 </div>
+
                 <div style={spaceBetwenButton}>
-                    <Button variant="outlined" color="primary" style={styleButton} disabled={true}>
+                    <Button variant="outlined" color="primary" style={styleButton} disabled={loginbuttondisabled}>
                         وررود به سامانه<LockOpenIcon/>
 
                     </Button>
                 </div>
+
+
+
+
+
             </form>
 
-
         </Container >
+
     );
+
 }
 
 export default BusinessLoginForm;

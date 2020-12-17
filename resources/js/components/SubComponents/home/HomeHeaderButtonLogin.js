@@ -41,7 +41,7 @@ function HomeHeaderButtonLogin(){
                     </Button>
                 </Link>
 
-                <Link style={linkstyle} to='business/login'>
+                <Link style={linkstyle} to='/business/login'>
                     <Button  variant="outlined" color="primary" style={styleButton}>
                         <LockOpenIcon/>  وروود کسب و کار
                     </Button>
