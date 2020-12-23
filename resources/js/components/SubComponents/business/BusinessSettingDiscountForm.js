@@ -14,6 +14,8 @@ import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { makeStyles } from '@material-ui/core/styles';
 
+
+
 const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
@@ -74,7 +76,7 @@ function BusinessSettingDiscountForm(){
 
     const classes = useStyles();
 
-return(
+    return(
     <Container  style={styleBgForm} xs="6">
         <div className="card-header" style={headerSettingForm}>
             <SettingsIcon/>
@@ -126,13 +128,26 @@ return(
                     InputProps={{endAdornment:<PaymentIcon/>}}
                 />
 
-                <TextField
-                    id="durationDiscountUsage1"
-                    label="تعداد ماه قابل استفاده"
-                    type="number"
-                    InputProps={{endAdornment:<DateRangeIcon/>}}
+                 {/*<TextField*/}
+                    {/*id="durationDiscountUsage1"*/}
+                    {/*label="تعداد ماه قابل استفاده"*/}
+                    {/*type="number"*/}
+                    {/*InputProps={{endAdornment:<DateRangeIcon/>}}*/}
 
-                />
+                {/*/>*/}
+
+               <TextField
+                   id="date"
+                   label="Birthday"
+                   type="date"
+                   defaultValue="2017-05-24"
+                   className={classes.textField}
+
+                   InputLabelProps={{
+                       shrink: true,
+                   }}
+               />
+
 
            </Grid>
         </Grid>
@@ -210,3 +225,19 @@ return(
 }
 
 export default BusinessSettingDiscountForm;
+
+
+
+
+// const useStyles = makeStyles((theme) => ({
+//     container: {
+//         display: 'flex',
+//         flexWrap: 'wrap',
+//     },
+//     textField: {
+//         marginLeft: theme.spacing(1),
+//         marginRight: theme.spacing(1),
+//         width: 200,
+//     },
+// }));
+

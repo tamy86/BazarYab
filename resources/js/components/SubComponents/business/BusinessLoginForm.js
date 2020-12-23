@@ -99,7 +99,9 @@ function BusinessLoginForm(){
     const [showerror,setShowerror]=React.useState(false);
     const [errormessage,setErrormesasage]=React.useState('');
 
-
+/*
+* get business category from bk end db
+* */
 if(loading) {
     axios.get('/api/business/businesslist').then(res => {
 
@@ -114,26 +116,59 @@ if(loading) {
         setBusinesstype(event.target.value);
     };
 
-
+/*
+recive verify code button
+* phone is input
+* out put is msg and succss and status code from bkend
+* */
 
 function  reciveSmsCode  () {
 
     const mobile = /(0|\+98)?([ ]|,|-|[()]){0,2}9[1|2|3|4]([ ]|,|-|[()]){0,2}(?:[0-9]([ ]|,|-|[()]){0,2}){8}/g;
     const result = phonevalue.match(mobile);
 
-    if ((phonevalue !== '') && (result))
+    if ((phonevalue !== '')&&(result))
     {
-        //handel to show error alert many times
-        setErrormesasage(
-            {
-                msg:'کد اعتبار سنجی به شماره همراه ارسال شد',
-                key:Math.random(),
-                errortype:'success'
-            });
-        //handel to show error alert
+        axios.post('/api/business/getverify',{'phone':phonevalue,'businessCategoryId':bussinesstype}).then(
 
-        setShowerror(true);
-        setLoginbuttondisabled(false);
+            res => {
+                if((res.data['Status Code']===200)&&(res.data['Success']===1)) {
+                    //handel to show error alert many times
+                    setErrormesasage(
+                        {
+                            msg: res.data['message'],
+                            key: Math.random(),
+                            errortype: 'success'
+                        });
+                    //handel to show error alert
+
+                    setShowerror(true);
+                    setLoginbuttondisabled(false);
+                }
+                else
+                if((res.data['Status Code']===200)&&(res.data['Success']===0)){
+                    setErrormesasage(
+                        {
+                            msg: res.data['message'],
+                            key: Math.random(),
+                            errortype: 'warning'
+                        });
+                    setShowerror(true);
+                    setLoginbuttondisabled(true);
+                }else
+                    if((res.data['Status Code']===200)&&(res.data['Success']===2)){
+                    setErrormesasage(
+                        {
+                            msg: res.data['message'],
+                            key: Math.random(),
+                            errortype: 'error'
+                        });
+                    setShowerror(true);
+                    setLoginbuttondisabled(true);
+                }
+
+            });
+
 
 
     }
@@ -150,6 +185,10 @@ function  reciveSmsCode  () {
         setShowerror(true);
     }
 }
+
+
+
+
 
 
     return(
@@ -175,7 +214,7 @@ function  reciveSmsCode  () {
                     label="کد اعتبار سنجی"
                 />
 
-                <InputLabel id="businessKind" style={selectStyleLabel}>{bussinesstype}کسب و کار</InputLabel>
+                <InputLabel id="businessKind" style={selectStyleLabel}>کسب و کار</InputLabel>
 
                 <Select
                     labelId="businessKind"

@@ -14,7 +14,7 @@ class CreateBusinessCategorise extends Migration
     public function up()
     {
         Schema::create('businessCategories', function (Blueprint $table) {
-            $table->integer('id')->autoIncrement()->unsigned()->index();
+            $table->integer('id')->autoIncrement()->index();
             $table->string('category_name')->index();
             $table->timestamps();
         });

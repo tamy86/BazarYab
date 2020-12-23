@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Business\LoginBusinessController;
+use App\Http\Controllers\Business\RegisterBusinessController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +22,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/business/businesslist',[LoginBusinessController::class,'listBusinessCategory']);
+Route::post('/business/getverify',[RegisterBusinessController::class,'getVerify'])->middleware('checkphone');
+
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'auth'
+
+], function ($router) {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::get('/user-profile', [AuthController::class, 'userProfile']);
+});
