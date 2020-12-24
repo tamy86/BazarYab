@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class InsertUstomerUser extends Migration
+class InsertCustomerUser extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class InsertUstomerUser extends Migration
     public function up()
     {
         Schema::create('customerUsers', function (Blueprint $table) {
-            $table->id();
+            $table->id()->autoIncrement()->index();
             $table->string('ipaddress')->index();
             $table->string('phone')->index();
             $table->string('verify')->index();
