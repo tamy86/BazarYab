@@ -1,39 +1,38 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-
 import SettingsIcon from '@material-ui/icons/Settings';
 import InfoIcon from '@material-ui/icons/Info';
 import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import PersonIcon from '@material-ui/icons/Person';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import PaymentIcon from '@material-ui/icons/Payment';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { makeStyles } from '@material-ui/core/styles';
 
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Divider from '@material-ui/core/Divider';
+import axios from "axios";
 
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        '& .MuiTextField-root': {
-            margin: theme.spacing(5),
-           width:"20%",
-            marginTop:'40px',
-            direction: 'rtl',
-
-        },
         "& .MuiFormLabel-root": {
             fontFamily:"IRANSans",
         },
         "& .MuiInputLabel-formControl":{
             right:0,
             left:'auto',
+            direction:'rtl',
         },
 
+
     },
+
 }));
 
 const styleBgForm= {
@@ -71,10 +70,79 @@ const spaceBetwenButton={
     paddingTop:'40px',
     textAlign:'center',
 };
+const selectStyle={
+width:'70%',
+    direction: 'rtl',
+    fontFamily:'IRANSans',
+
+};
 
 function BusinessSettingDiscountForm(){
 
     const classes = useStyles();
+    const [loading,setLoading]=React.useState(true);
+
+    const[customerNo1,setCustomerNo1]=React.useState();
+    const[customerNo2,setCustomerNo2]=React.useState();
+    const[customerNo3,setCustomerNo3]=React.useState();
+    const [listcustomerNo, setListcustomerNo]=React.useState([]);
+
+    const[percent1,setPercent1]=React.useState();
+    const[percent2,setPercent2]=React.useState();
+    const[percent3,setPercent3]=React.useState();
+    const [listPercent, setListPercent]=React.useState([]);
+
+    const[month1,setMonth1]=React.useState();
+    const[month2,setMonth2]=React.useState();
+    const[month3,setMonth3]=React.useState();
+    const [listMonth, setListMonth]=React.useState([]);
+
+
+
+
+    if(loading) {
+        axios.get('/api/business/listnocustomer').then(res => {
+
+            setListcustomerNo(res.data);
+
+            setLoading(false);
+        });
+
+        axios.get('/api/business/listpercents').then(res => {
+
+            setListPercent(res.data);
+
+            setLoading(false);
+        });
+
+        axios.get('/api/business/listmonths').then(res => {
+
+            setListMonth(res.data);
+
+            setLoading(false);
+        });
+
+    }
+
+    const handeleChangeRow1 = (event) => {
+        setCustomerNo1(event.target.value);
+        setPercent1(event.target.value);
+        setMonth1(event.target.value);
+    };
+
+    const handeleChangeRow2 = (event) => {
+        setCustomerNo2(event.target.value);
+        setPercent2(event.target.value);
+        setMonth2(event.target.value);
+    };
+
+    const handeleChangeRow3 = (event) => {
+        setCustomerNo3(event.target.value);
+        setPercent3(event.target.value);
+        setMonth3(event.target.value);
+    };
+
+
 
     return(
     <Container  style={styleBgForm} xs="6">
@@ -90,124 +158,262 @@ function BusinessSettingDiscountForm(){
             </h3>
             <br/>
             <p>
-                <SpeakerNotesIcon/>                  این فرم برای تنظیم درصد تخفیف با توجه به تعداد خرید مشتری
-                در مدت زمان معین میباشد. که کاربر مغازه دار (صاحب کسب کار)
-                میتواند با پر کردن 3 فیلد مشخص نماید که مشتری با چند بار خرید
+                <SpeakerNotesIcon/>                  این فرم برای تنظیم درصد تخفیف با توجه به تعداد مشتری معرفی شده
+                در مدت زمان معین میباشد. که کاربر صاحب کسب کار
+                میتواند با پر کردن 3 فیلد مشخص نماید که مشتری با معرفی چند خریدار
                 در چه مدت زمانی دارای چه مقدار تخفیف باشد.
                 به عنوان مثال: میتوانید مشخص نمایید
-                مشتری پس از چه تعداد خرید(در قسمت تعداد خرید مشتری) میتواند چند درصد تخفیف
-                 (در قسمت درصد تخفیف) و در چه مدت زمانی (در قسمت تعداد ماه قابل استفاده)
-                از فروشکاه یا صاحب کسب و کار تخفیف داشته باشد.
+                مشتری پس از معرفی چه تعداد مشتری(تعداد مشتری معرفی شده) میتواند چند درصد تخفیف
+                 (در قسمت درصد تخفیف برای مشتری) و در چه مدت زمانی (در قسمت تعداد ماه قابل استفاده از تخفیف)
+                از فروشکاه یا صاحب کسب و کار را داشته باشد.
                 هر صاحب کسب و کار میتواند 3 سطر در رابطه با تخفیفات را به صورت
                 صعودی تنظیم نماید. به عنوان مثال : یک مشتری(خریدار) میتواند با
-                توجه به تعداد خرید تنظیم شده در سطر اول زمانی که تعداد خرید وی بیشتر
+                توجه به تعداد مشتری معرفی شده تنظیم شده در سطر اول زمانی که تعداد افراد معرف شده توسط مشتری بیشتر
                 از آن تعداد شد به مدت زمان تعیین شده از آن تخفیف استفاده نماید.
                 حال این مقدار و ارقام میبتواند در سطر های
-                بعدی بیشتر باشد که مشتری (خریدار) با مراجعه بیشتر از درصد تخفیف بیشتر
+                بعدی صعودی باشد که مشتری (خریدار) با معرفی افراد بیشتر از درصد تخفیف بیشتر
                 در مدت زمان بیشتری استفاده نماید.
             </p>
             <p style={{fontWeight:'bold'}}><InfoIcon/> لازم به ذکر میباشد این فرم فقط یکبار توسط صاحب کسب و کار قابل تنظیم میباشد.  </p>
         </div>
       <form>
-        <Grid className={classes.root}  container spacing={24}>
+        <Grid style={{marginTop:'50px'}} className={classes.root}  container spacing={24}>
 
-           <Grid style={{width:"100%",textAlign: "center"}}   item xs={3} sm={3} md>
+           <Grid style={{textAlign:'right',float:'right'}}   item xs>
+               <InputLabel id="customerNo" ><PersonIcon/>تعداد مشتری معرفی شده</InputLabel>
 
-                <TextField
-                    id="noShoping1"
-                    label="تعداد خرید مشتری"
-                    type="number"
-                    InputProps={{endAdornment:<ShoppingCartIcon/>}}
-                />
+               <Select
+                   labelId="customerNo"
+                   id='customerNo'
+                   value={customerNo1}
+                   style={selectStyle}
+                   onChange={handeleChangeRow1}
 
+               >
+                   {listcustomerNo.map(list=>{
 
-                <TextField
-                    id="discountPercent1"
-                    label="درصد تخفیف % (فقط عدد)"
-                    type="number"
-                    InputProps={{endAdornment:<PaymentIcon/>}}
-                />
-
-                 {/*<TextField*/}
-                    {/*id="durationDiscountUsage1"*/}
-                    {/*label="تعداد ماه قابل استفاده"*/}
-                    {/*type="number"*/}
-                    {/*InputProps={{endAdornment:<DateRangeIcon/>}}*/}
-
-                {/*/>*/}
-
-               <TextField
-                   id="date"
-                   label="Birthday"
-                   type="date"
-                   defaultValue="2017-05-24"
-                   className={classes.textField}
-
-                   InputLabelProps={{
-                       shrink: true,
-                   }}
-               />
+                       return(
+                           <MenuItem key={list.id} value={list.id}>{list.no_customer} نفر </MenuItem>
+                       )
 
 
+                   })}
+
+
+               </Select>
            </Grid>
-        </Grid>
-            <Grid className={classes.root}  container spacing={24}>
-                <Grid style={{width:"100%",textAlign: "center"}}   item xs={3} sm={3} md>
 
-                <TextField
-                    id="noShoping2"
-                    label="تعداد خرید مشتری"
-                    type="number"
-                    InputProps={{endAdornment:<ShoppingCartIcon/>}}
-                />
+            <Grid style={{textAlign:'right',float:'right'}}   item xs>
+                <InputLabel id="customerpercent" ><PaymentIcon/>درصد تخفیف برای مشتری</InputLabel>
+
+                <Select
+                    labelId="customerpercent"
+                    id='customerpercent'
+                    value={percent1}
+                    style={selectStyle}
+                    onChange={handeleChangeRow1}
+
+                >
+                    {listPercent.map(list=>{
+
+                        return(
+                            <MenuItem key={list.id} value={list.id}>{list.percent} درصد </MenuItem>
+                        )
 
 
-                <TextField
-                    id="discountPercent2"
-                    label="درصد تخفیف % (فقط عدد)"
-                    type="number"
-                    InputProps={{endAdornment:<PaymentIcon/>}}
-                />
+                    })}
 
-                <TextField
-                    id="durationDiscountUsage2"
-                    label="تعداد ماه قابل استفاده"
-                    type="number"
-                    InputProps={{endAdornment:<DateRangeIcon/>}}
 
-                />
+                </Select>
+            </Grid>
 
+
+            <Grid style={{textAlign:'right',float:'right'}}   item xs>
+                <InputLabel id="customermonth1" ><DateRangeIcon/>تعداد ماه قابل استفاده از تخفیف</InputLabel>
+
+                <Select
+                    labelId="customermonth1"
+                    id='customermonth1'
+                    value={month1}
+                    style={selectStyle}
+                    onChange={handeleChangeRow1}
+
+                >
+                    {listMonth.map(list=>{
+
+                        return(
+                            <MenuItem key={list.id} value={list.id}>{list.month} ماه </MenuItem>
+                        )
+
+
+                    })}
+
+
+                </Select>
             </Grid>
         </Grid>
 
-          <Grid className={classes.root}  container spacing={24}>
 
-              <Grid style={{width:"100%",textAlign: "center"}}   item xs={3} sm={3} md>
-
-                  <TextField
-                      id="noShoping3"
-                      label="تعداد خرید مشتری"
-                      type="number"
-                      InputProps={{endAdornment:<ShoppingCartIcon/>}}
-                  />
+          <Divider style={{marginTop:'20px'}}/>
 
 
-                  <TextField
-                      id="discountPercent3"
-                      label="درصد تخفیف % (فقط عدد)"
-                      type="number"
-                      InputProps={{endAdornment:<PaymentIcon/>}}
-                  />
+          <Grid style={{marginTop:'50px'}} className={classes.root}  container spacing={24}>
 
-                  <TextField
-                      id="durationDiscountUsage3"
-                      label="تعداد ماه قابل استفاده"
-                      type="number"
-                      InputProps={{endAdornment:<DateRangeIcon/>}}
-                  />
+              <Grid style={{textAlign:'right',float:'right'}}   item xs>
+                  <InputLabel id="customerNo" ><PersonIcon/>تعداد مشتری معرفی شده</InputLabel>
 
+                  <Select
+                      labelId="customerNo"
+                      id='customerNo'
+                      value={customerNo2}
+                      style={selectStyle}
+                      onChange={handeleChangeRow2}
+
+                  >
+                      {listcustomerNo.map(list=>{
+
+                          return(
+                              <MenuItem key={list.id} value={list.id}>{list.no_customer} نفر </MenuItem>
+                          )
+
+
+                      })}
+
+
+                  </Select>
+              </Grid>
+
+              <Grid style={{textAlign:'right',float:'right'}}   item xs>
+                  <InputLabel id="customerpercent" ><PaymentIcon/>درصد تخفیف برای مشتری</InputLabel>
+
+                  <Select
+                      labelId="customerpercent"
+                      id='customerpercent'
+                      value={percent2}
+                      style={selectStyle}
+                      onChange={handeleChangeRow2}
+
+                  >
+                      {listPercent.map(list=>{
+
+                          return(
+                              <MenuItem key={list.id} value={list.id}>{list.percent} درصد </MenuItem>
+                          )
+
+
+                      })}
+
+
+                  </Select>
+              </Grid>
+
+
+              <Grid style={{textAlign:'right',float:'right'}}   item xs>
+                  <InputLabel id="customermonth1" ><DateRangeIcon/>تعداد ماه قابل استفاده از تخفیف</InputLabel>
+
+                  <Select
+                      labelId="customermonth1"
+                      id='customermonth1'
+                      value={month2}
+                      style={selectStyle}
+                      onChange={handeleChangeRow2}
+
+                  >
+                      {listMonth.map(list=>{
+
+                          return(
+                              <MenuItem key={list.id} value={list.id}>{list.month} ماه </MenuItem>
+                          )
+
+
+                      })}
+
+
+                  </Select>
               </Grid>
           </Grid>
+
+
+
+          <Divider style={{marginTop:'20px'}}/>
+
+
+          <Grid style={{marginTop:'50px'}} className={classes.root}  container spacing={24}>
+
+              <Grid style={{textAlign:'right',float:'right'}}   item xs>
+                  <InputLabel id="customerNo" > <PersonIcon/>تعداد مشتری معرفی شده</InputLabel>
+
+                  <Select
+                      labelId="customerNo"
+                      id='customerNo'
+                      value={customerNo3}
+                      style={selectStyle}
+                      onChange={handeleChangeRow3}
+
+                  >
+                      {listcustomerNo.map(list=>{
+
+                          return(
+                              <MenuItem key={list.id} value={list.id}>{list.no_customer} نفر </MenuItem>
+                          )
+
+
+                      })}
+
+
+                  </Select>
+              </Grid>
+
+              <Grid style={{textAlign:'right',float:'right'}}   item xs>
+                  <InputLabel id="customerpercent" > <PaymentIcon/>درصد تخفیف برای مشتری</InputLabel>
+
+                  <Select
+                      labelId="customerpercent"
+                      id='customerpercent'
+                      value={percent3}
+                      style={selectStyle}
+                      onChange={handeleChangeRow3}
+
+                  >
+                      {listPercent.map(list=>{
+
+                          return(
+                              <MenuItem key={list.id} value={list.id}>{list.percent} درصد </MenuItem>
+                          )
+
+
+                      })}
+
+
+                  </Select>
+              </Grid>
+
+
+              <Grid style={{textAlign:'right',float:'right'}}   item xs>
+                  <InputLabel id="customermonth1" > <DateRangeIcon/>تعداد ماه قابل استفاده از تخفیف</InputLabel>
+
+                  <Select
+                      labelId="customermonth1"
+                      id='customermonth1'
+                      value={month3}
+                      style={selectStyle}
+                      onChange={handeleChangeRow3}
+
+                  >
+                      {listMonth.map(list=>{
+
+                          return(
+                              <MenuItem key={list.id} value={list.id}>{list.month} ماه </MenuItem>
+                          )
+
+
+                      })}
+
+
+                  </Select>
+              </Grid>
+          </Grid>
+
 
           <div style={spaceBetwenButton}>
               <Button variant="outlined" color="primary" style={styleButton}>
@@ -226,18 +432,4 @@ function BusinessSettingDiscountForm(){
 
 export default BusinessSettingDiscountForm;
 
-
-
-
-// const useStyles = makeStyles((theme) => ({
-//     container: {
-//         display: 'flex',
-//         flexWrap: 'wrap',
-//     },
-//     textField: {
-//         marginLeft: theme.spacing(1),
-//         marginRight: theme.spacing(1),
-//         width: 200,
-//     },
-// }));
 

@@ -18,10 +18,13 @@ class InsertUstomerUser extends Migration
             $table->string('ipaddress')->index();
             $table->string('phone')->index();
             $table->string('verify')->index();
-            $table->string('name')->index();
-            $table->string('family')->index();
-            $table->string('nationlacode')->index();
-            $table->string('cartno')->index();
+            $table->string('username')->nullable()->index();
+            $table->string('password')->nullable()->index();
+            $table->string('token')->nullable()->index();
+            $table->string('name')->nullable()->index();
+            $table->string('family')->nullable()->index();
+            $table->string('nationlacode')->nullable()->index();
+            $table->string('cartno')->nullable()->index();
             $table->boolean('signin')->index();
             $table->timestamps();
         });

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Business\LoginBusinessController;
 use App\Http\Controllers\Business\RegisterBusinessController;
+use App\Http\Controllers\Business\GetAllInfoBusinessSettingsController;
 use App\Http\Controllers\AuthController;
 
 /*
@@ -23,6 +24,20 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/business/businesslist',[LoginBusinessController::class,'listBusinessCategory']);
 Route::post('/business/getverify',[RegisterBusinessController::class,'getVerify'])->middleware('checkphone');
+
+
+Route::group([
+//    'middleware' => 'api',
+//    'prefix' => 'auth'
+],
+function() {
+    Route::get('/business/listnocustomer', [GetAllInfoBusinessSettingsController::class, 'listNoCustomer']);
+    Route::get('/business/listmonths', [GetAllInfoBusinessSettingsController::class, 'listMonths']);
+    Route::get('/business/listpercents', [GetAllInfoBusinessSettingsController::class, 'listPercents']);
+
+});
+
+
 
 
 Route::group([
