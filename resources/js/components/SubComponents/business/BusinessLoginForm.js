@@ -96,6 +96,7 @@ function BusinessLoginForm(){
     const [loading,setLoading]=React.useState(true);
     const [loginbuttondisabled,setLoginbuttondisabled]=React.useState(true);
     const [phonevalue,setPhonevalue]=React.useState('');
+    const [verifyvalue,setVerifyvalue]=React.useState('');
     const [showerror,setShowerror]=React.useState(false);
     const [errormessage,setErrormesasage]=React.useState('');
 
@@ -127,46 +128,33 @@ function  reciveSmsCode  () {
     const mobile = /(0|\+98)?([ ]|,|-|[()]){0,2}9[1|2|3|4]([ ]|,|-|[()]){0,2}(?:[0-9]([ ]|,|-|[()]){0,2}){8}/g;
     const result = phonevalue.match(mobile);
 
-    if ((phonevalue !== '')&&(result))
+    if ((phonevalue !== '')&&(result)&&(bussinesstype !== undefined))
     {
         axios.post('/api/business/getverify',{'phone':phonevalue,'businessCategoryId':bussinesstype}).then(
 
-            res => {
-                if((res.data['Status Code']===200)&&(res.data['Success']===1)) {
+            (res) => {
+                if((res.data['Success']===1)) {
                     //handel to show error alert many times
                     setErrormesasage(
                         {
                             msg: res.data['message'],
                             key: Math.random(),
-                            errortype: 'success'
+                            errortype: res.data['message type']
                         });
                     //handel to show error alert
 
                     setShowerror(true);
                     setLoginbuttondisabled(false);
                 }
-                else
-                if((res.data['Status Code']===200)&&(res.data['Success']===0)){
-                    setErrormesasage(
-                        {
-                            msg: res.data['message'],
-                            key: Math.random(),
-                            errortype: 'warning'
-                        });
-                    setShowerror(true);
-                    setLoginbuttondisabled(true);
-                }else
-                    if((res.data['Status Code']===200)&&(res.data['Success']===2)){
-                    setErrormesasage(
-                        {
-                            msg: res.data['message'],
-                            key: Math.random(),
-                            errortype: 'error'
-                        });
-                    setShowerror(true);
-                    setLoginbuttondisabled(true);
-                }
-
+            })
+            .catch((error)=>{
+                setErrormesasage(
+                    {
+                        msg: error.response.data['message'],
+                        key: Math.random(),
+                        errortype: error.response.data['message type'],
+                    });
+                setShowerror(true);
             });
 
 
@@ -177,7 +165,7 @@ function  reciveSmsCode  () {
 
         setErrormesasage(
             {
-                msg:'شماره همراه وارد شده صحیح نمی باشد',
+                msg:'شماره همراه وارد شده صحیح نمی باشد یا نوع کسب و کار را انتخاب نکرده اید',
                 key:Math.random(),
                 errortype:'warning'
             });
@@ -187,7 +175,47 @@ function  reciveSmsCode  () {
 }
 
 
+function checkVerifyCode(){
 
+    if ((verifyvalue !== ''))
+    {
+axios.post('/api/business/checkverify',{'phone':phonevalue,'verify':verifyvalue,'bussinesscategoryId':bussinesstype}).then((res)=>{
+
+        if((res.data['Success']===1)) {
+
+            setErrormesasage(
+                {
+                    msg: res.data['message'],
+                    key: Math.random(),
+                    errortype: res.data['message type'],
+                });
+            setShowerror(true);
+
+        }
+})
+.catch((error)=>{
+
+       setErrormesasage(
+           {
+               msg: error.response.data['message'],
+               key: Math.random(),
+               errortype:error.response.data['message type'],
+           });
+       setShowerror(true);
+
+});
+
+    }
+    else{
+        setErrormesasage(
+            {
+                msg:'کد اعتبار سنجی خالی میباشد',
+                key:Math.random(),
+                errortype:'warning'
+            }
+        );
+    }
+}
 
 
 
@@ -212,6 +240,8 @@ function  reciveSmsCode  () {
                 <TextField
                     id="businessVerifyCode"
                     label="کد اعتبار سنجی"
+                    onChange={event=>setVerifyvalue(event.target.value)}
+                    value={verifyvalue}
                 />
 
                 <InputLabel id="businessKind" style={selectStyleLabel}>کسب و کار</InputLabel>
@@ -243,7 +273,7 @@ function  reciveSmsCode  () {
                 </div>
 
                 <div style={spaceBetwenButton}>
-                    <Button variant="outlined" color="primary" style={styleButton} disabled={loginbuttondisabled}>
+                    <Button variant="outlined" color="primary" onClick={checkVerifyCode} style={styleButton} disabled={loginbuttondisabled}>
                         وررود به سامانه<LockOpenIcon/>
 
                     </Button>
