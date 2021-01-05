@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import PersonIcon from '@material-ui/icons/Person';
 import {Link} from "react-router-dom";
+import axios from "axios";
+import BusinessAlerts from "./BusinessAlertShow";
 
 
 
@@ -20,7 +22,12 @@ const styleMenuItem={
 const linkstyle= {
     color:'#0e0e0e',
     textDecoration:'none',
-    display:'contents'
+    display:'contents',
+
+};
+const nameStyle={
+    fontWeight:'bold',
+    fontSize:'larger',
 };
 
 
@@ -28,6 +35,10 @@ const linkstyle= {
 function BusinessProfileCircleMenu(){
 
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [name,setName]=React.useState('');
+    const [family,setFamily]=React.useState('');
+    const [errormessage,setErrormesasage]=React.useState('');
+    const [showerror,setShowerror]=React.useState(false);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -37,9 +48,43 @@ function BusinessProfileCircleMenu(){
         setAnchorEl(null);
     };
 
+
+    useEffect(()=> {
+
+
+        const getNameFamilyBusiness=async ()=>{
+            /*header config in app.js file so for all header need to check auth going and to check */
+            try{
+                const  res=  await axios.get('/api/business/getnamefamily');
+                setName(res.data['name']);
+                setFamily(res.data['family']);
+
+            }
+            catch(error){
+
+                setErrormesasage(
+                    {
+                        msg: error.response.data['message'],
+                        key: Math.random(),
+                        errortype: error.response.data['message type'],
+                    });
+                setShowerror(true);
+            }
+        };
+        getNameFamilyBusiness();
+    },[setName,setFamily]);
+
+
+
+
+
     return(
 
+
         <div>
+            {showerror ?
+                <BusinessAlerts key={errormessage.key} errormessage={errormessage.msg} errortype={errormessage.errortype}/>:null
+            }
 
             <IconButton
                 color="primary"
@@ -63,7 +108,7 @@ function BusinessProfileCircleMenu(){
             >
                 <Link style={linkstyle} to='/business/editprofile'>
                 <MenuItem style={styleMenuItem}  onClick={handleClose}>
-                    <li>ویرایش پروفایل</li>
+                    <li style={nameStyle}>{name} {family}</li>
                 </MenuItem>
                 </Link>
 

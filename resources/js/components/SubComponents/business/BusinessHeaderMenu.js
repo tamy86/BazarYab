@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createMuiTheme, makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -23,6 +23,9 @@ import {ThemeProvider} from '@material-ui/core';
 import {Link} from "react-router-dom";
 
 import BusinessProfileCircleMenu from '../business/BusinessProfileCircleMenu';
+import axios from "axios";
+import BusinessAlerts from "./BusinessAlertShow";
+import Container from "@material-ui/core/Container/Container";
 
 
 
@@ -139,12 +142,19 @@ const linkstyle= {
     display:'contents'
 };
 
-
+const userphoneStyle={
+    fontSize:'x-large'
+};
 
 function BusinessHeaderMenu() {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
+    const [userphone,setUserphone]=React.useState();
+    const [errormessage,setErrormesasage]=React.useState('');
+    const [showerror,setShowerror]=React.useState(false);
+
+
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -154,8 +164,44 @@ function BusinessHeaderMenu() {
         setOpen(false);
     };
 
+
+    useEffect(()=> {
+
+
+        const getPhoneBusiness=async ()=>{
+            /*header config in app.js file so for all header need to check auth going and to check */
+            try{
+                const  res=  await axios.get('/api/business/getphone');
+
+                setUserphone(res.data['phone']);
+            }
+            catch(error){
+
+
+                setErrormesasage(
+                    {
+                        msg: error.response.data['message'],
+                        key: Math.random(),
+                        errortype: error.response.data['message type'],
+                    });
+                setShowerror(true);
+            }
+        };
+        getPhoneBusiness();
+    },[setUserphone]);
+
+
+
+
+
     return (
         <div className={classes.root}>
+
+            {showerror ?
+                <BusinessAlerts key={errormessage.key} errormessage={errormessage.msg} errortype={errormessage.errortype}/>:null
+            }
+
+
             <CssBaseline />
             <AppBar
                 style={{height:'65px',backgroundColor:'#00BFFF'}}
@@ -189,11 +235,14 @@ function BusinessHeaderMenu() {
                         paper: classes.drawerPaper,
                     }}
                 >
+
                     <div className={classes.drawerHeader}>
                         <IconButton onClick={handleDrawerClose}>
                             {theme.direction === 'rtl' ? <CloseIcon/> : <CloseIcon/>}
 
                         </IconButton>
+                        <h2 style={userphoneStyle}> {userphone}</h2>
+
                     </div>
                     <Divider />
 

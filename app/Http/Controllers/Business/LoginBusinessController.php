@@ -10,9 +10,16 @@ class LoginBusinessController extends Controller
 {
     public function listBusinessCategory()
     {
-            $businessCtegory = Businesscategory::all('category_name','id');
-
+        try {
+            $businessCtegory = Businesscategory::all('category_name', 'id');
             return response()->json($businessCtegory);
+        }catch (\Exception $exception)
+        {
+            return response()->json([
+                'message'=>'مشکل در اتصال به دیتا بیس با پشتیبانی تماس بگیرید ',
+                'message type'=>'error',
+            ],500);
+        }
 
     }
 }

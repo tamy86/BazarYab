@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Business\LoginBusinessController;
 use App\Http\Controllers\Business\RegisterBusinessController;
 use App\Http\Controllers\Business\GetAllInfoBusinessSettingsController;
+use App\Http\Controllers\Business\GetAllInfoBusinessProfileController;
 
 use App\Http\Controllers\AuthController;
 
@@ -46,9 +47,15 @@ function() {
 //],
 //    function ($router) {
         Route::post('/business/checkverify', [RegisterBusinessController::class, 'checkVerify'])->middleware('checkverify');
-        Route::get('/business/checkverifytu', [RegisterBusinessController::class, 'test']);
+//        Route::get('/business/home', [RegisterBusinessController::class, 'test']);
 
 //    });
+
+
+Route::get('/business/gettoken',[GetAllInfoBusinessProfileController::class,'getToken']);
+Route::get('/business/getnamefamily',[GetAllInfoBusinessProfileController::class,'getNameFamily']);
+Route::get('/business/getphone',[GetAllInfoBusinessProfileController::class,'getPhone']);
+
 
 
 //Route::group([

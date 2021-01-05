@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useEffect}from 'react';
 import Container  from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import MobileFriendly from '@material-ui/icons/MobileFriendly';
@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+
 
 import axios from 'axios';
 import BusinessAlerts from "./BusinessAlertShow";
@@ -93,61 +94,34 @@ function BusinessLoginForm(){
 
     const [bussinesstype, setBusinesstype] = React.useState();
     const [categoryname, setCategoryname]=React.useState([]);
-    const [loading,setLoading]=React.useState(true);
     const [loginbuttondisabled,setLoginbuttondisabled]=React.useState(true);
     const [phonevalue,setPhonevalue]=React.useState('');
     const [verifyvalue,setVerifyvalue]=React.useState('');
     const [showerror,setShowerror]=React.useState(false);
     const [errormessage,setErrormesasage]=React.useState('');
+    const[error,setError]=React.useState();
 
-/*
-* get business category from bk end db
-* */
-if(loading) {
-    axios.get('/api/business/businesslist').then(res => {
 
-        setCategoryname(res.data);
 
-        setLoading(false);
-    })
+if(localStorage.getItem('token')!==null) {
+    window.location=`/business/home`;
+
 }
 
+    /*
+    * get business category from bk end db
+    * */
+    useEffect(() => {
 
-    const handleChange = (event) => {
-        setBusinesstype(event.target.value);
-    };
+        const getListBusiness = async () => {
+            try {
 
-/*
-recive verify code button
-* phone is input
-* out put is msg and succss and status code from bkend
-* */
+                const res = await axios.get('/api/business/businesslist');
 
-function  reciveSmsCode  () {
+                setCategoryname(res.data);
 
-    const mobile = /(0|\+98)?([ ]|,|-|[()]){0,2}9[1|2|3|4]([ ]|,|-|[()]){0,2}(?:[0-9]([ ]|,|-|[()]){0,2}){8}/g;
-    const result = phonevalue.match(mobile);
-
-    if ((phonevalue !== '')&&(result)&&(bussinesstype !== undefined))
-    {
-        axios.post('/api/business/getverify',{'phone':phonevalue,'businessCategoryId':bussinesstype}).then(
-
-            (res) => {
-                if((res.data['Success']===1)) {
-                    //handel to show error alert many times
-                    setErrormesasage(
-                        {
-                            msg: res.data['message'],
-                            key: Math.random(),
-                            errortype: res.data['message type']
-                        });
-                    //handel to show error alert
-
-                    setShowerror(true);
-                    setLoginbuttondisabled(false);
-                }
-            })
-            .catch((error)=>{
+            }
+            catch (error) {
                 setErrormesasage(
                     {
                         msg: error.response.data['message'],
@@ -155,67 +129,133 @@ function  reciveSmsCode  () {
                         errortype: error.response.data['message type'],
                     });
                 setShowerror(true);
-            });
+                setLoginbuttondisabled(false);
+            }
+
+        };
+        getListBusiness();
+    }, [setCategoryname]);
 
 
+    const handleChange = (event) => {
 
-    }
-    else{
-        setLoginbuttondisabled(true);
+        setBusinesstype(event.target.value);
 
-        setErrormesasage(
-            {
-                msg:'شماره همراه وارد شده صحیح نمی باشد یا نوع کسب و کار را انتخاب نکرده اید',
-                key:Math.random(),
-                errortype:'warning'
-            });
+    };
 
-        setShowerror(true);
-    }
-}
+    /*
+    recive verify code button
+    * phone is input
+    * out put is msg and succss and status code from bkend
+    * */
 
 
-function checkVerifyCode(){
+    function reciveSmsCode() {
 
-    if ((verifyvalue !== ''))
-    {
-axios.post('/api/business/checkverify',{'phone':phonevalue,'verify':verifyvalue,'bussinesscategoryId':bussinesstype}).then((res)=>{
+        const mobile = /(0|\+98)?([ ]|,|-|[()]){0,2}9[1|2|3|4]([ ]|,|-|[()]){0,2}(?:[0-9]([ ]|,|-|[()]){0,2}){8}/g;
+        const result = phonevalue.match(mobile);
 
-        if((res.data['Success']===1)) {
+        if ((phonevalue !== '') && (result) && (bussinesstype !== undefined)) {
+            axios.post('/api/business/getverify', {'phone': phonevalue, 'businessCategoryId': bussinesstype}).then(
+                (res) => {
+
+                    // setErrorCode(res.statusCode);
+
+
+                    if ((res.data['Success'] === 1)) {
+                        //handel to show error alert many times
+                        setErrormesasage(
+                            {
+                                msg: res.data['message'],
+                                key: Math.random(),
+                                errortype: res.data['message type'],
+                            });
+                        //handel to show error alert
+
+                        setShowerror(true);
+                        setLoginbuttondisabled(false);
+                    }
+                })
+                .catch((error) => {
+                    setError(error.response.status);
+                    setErrormesasage(
+                        {
+                            msg: error.response.data['message'],
+                            key: Math.random(),
+                            errortype: error.response.data['message type'],
+                        });
+                    setShowerror(true);
+                });
+
+
+        }
+        else {
+            setLoginbuttondisabled(true);
 
             setErrormesasage(
                 {
-                    msg: res.data['message'],
+                    msg: 'شماره همراه وارد شده صحیح نمی باشد یا نوع کسب و کار را انتخاب نکرده اید',
                     key: Math.random(),
-                    errortype: res.data['message type'],
+                    errortype: 'warning'
                 });
+
             setShowerror(true);
+        }
+    }
+
+
+    function checkVerifyCode() {
+
+        if ((verifyvalue !== '')) {
+            axios.post('/api/business/checkverify', {
+                'phone': phonevalue,
+                'verify': verifyvalue,
+                'bussinesscategoryId': bussinesstype
+            }).then((res) => {
+
+                if ((res.data['Success'] === 1)) {
+
+                    const token = res.data['access_token'];
+
+
+                    localStorage.setItem('token', token);
+
+                    window.location = `/business/home`;
+                    setErrormesasage(
+                        {
+                            msg: res.data['message'],
+                            key: Math.random(),
+                            errortype: res.data['message type'],
+
+                        });
+                    setShowerror(true);
+
+
+                }
+            })
+                .catch((error) => {
+
+                    setErrormesasage(
+                        {
+                            msg: error.response.data['message'],
+                            key: Math.random(),
+                            errortype: error.response.data['message type'],
+                        });
+                    setShowerror(true);
+
+                });
 
         }
-})
-.catch((error)=>{
-
-       setErrormesasage(
-           {
-               msg: error.response.data['message'],
-               key: Math.random(),
-               errortype:error.response.data['message type'],
-           });
-       setShowerror(true);
-
-});
-
+        else {
+            setErrormesasage(
+                {
+                    msg: 'کد اعتبار سنجی خالی میباشد',
+                    key: Math.random(),
+                    errortype: 'warning'
+                }
+            );
+        }
     }
-    else{
-        setErrormesasage(
-            {
-                msg:'کد اعتبار سنجی خالی میباشد',
-                key:Math.random(),
-                errortype:'warning'
-            }
-        );
-    }
-}
 
 
 
@@ -251,7 +291,7 @@ axios.post('/api/business/checkverify',{'phone':phonevalue,'verify':verifyvalue,
                     id='businessKind'
                     value={bussinesstype}
                     onChange={handleChange}
-                    style={selectStyle}>
+                    style={selectStyle} >
 
 
 

@@ -138,7 +138,10 @@ class RegisterBusinessController extends Controller
             ], 401);
         }
 
+        Businessuser::where('phone', $request->input('phone'))->update(['token' => $token]);
+
         return $this->createNewToken($token);
+
 
 
 //
@@ -169,12 +172,4 @@ class RegisterBusinessController extends Controller
         ]);
     }
 
-    public function test(){
-
-        $phoneAndVerifyExist = Businessnocustomer::get();
-//        $tet=auth()->user();
-        return response()->json([
-            "asda"=>$phoneAndVerifyExist
-        ]);
-    }
 }

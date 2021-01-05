@@ -40,6 +40,17 @@ function BusinessAlerts(props) {
         setOpen(false);
     };
 
+
+    switch (props.responsecode) {
+
+        case 500:
+        {}
+
+
+    }
+
+
+
     return (
         <div className={classes.root}>
 

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Business\RegisterBusinessController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +42,7 @@ Route::get('/user/editprofile', function () {
 
 Route::get('/business/login', function () {
     return view('Business.BusinessLogin');
-});
+})->name('businesslogin');
 
 Route::get('/business/home', function () {
     return view('Business.BusinessHome');
