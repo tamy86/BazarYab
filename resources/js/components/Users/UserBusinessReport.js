@@ -19,13 +19,13 @@ const divContentStyle={
 function UserBusinessReport() {
     return(
         <div>
-        <UserHeader/>
+
 
         <Container style={divContentStyle}>
             <UserBusinessReportTable/>
         </Container>
 
-            <UserFooter/>
+
         </div>
     );
 

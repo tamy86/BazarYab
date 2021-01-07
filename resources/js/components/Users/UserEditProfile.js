@@ -18,14 +18,14 @@ function UserEditProfile(){
 
     return(
         <div>
-            <UserHeader/>
+
         <Container maxWidth="xl"  style={userLoginStyle}>
 
             <UserEditProfileForm/>
 
         </Container >
 
-            <UserFooter/>
+
         </div>
     );
 }

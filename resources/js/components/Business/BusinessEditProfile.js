@@ -20,14 +20,14 @@ function BusinessEditProfile(){
 
     return(
         <div>
-            <BusinessHeader/>
+
             <Container maxWidth="xl"  style={userLoginStyle}>
 
                 <BusinessEditProfileForm/>
 
             </Container >
 
-            <BusinessFooter/>
+
         </div>
     );
 }

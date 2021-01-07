@@ -19,7 +19,6 @@ function BusinessNewCustomer(){
 
     return(
         <div>
-            <BusinessHeader/>
 
         <Container maxWidth="xl"  style={userLoginStyle}>
 
@@ -27,7 +26,6 @@ function BusinessNewCustomer(){
 
         </Container >
 
-            <BusinessFooter/>
 
         </div>
     );

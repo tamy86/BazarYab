@@ -79,14 +79,14 @@ else
                         <BusinessAlerts key={errormessage.key} errormessage={errormessage.msg} errortype={errormessage.errortype}/>:null
                     }
 
-                    <BusinessHeader/>
+
 
                     <Container maxWidth="xl" style={divContentStyle}>
                         <BusinessContentText/>
 
                     </Container>
 
-                    <BusinessFooter/>
+
                 </div>
 
             );

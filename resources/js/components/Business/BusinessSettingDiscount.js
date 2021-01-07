@@ -18,7 +18,7 @@ const userLoginStyle={
 function BusinessSettingDiscount() {
     return(
         <div>
-            <BusinessHeader/>
+
 
         <Container maxWidth="xl" style={userLoginStyle}>
 
@@ -26,7 +26,6 @@ function BusinessSettingDiscount() {
 
         </Container>
 
-            <BusinessFooter/>
         </div>
     );
 }

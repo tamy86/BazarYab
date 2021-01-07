@@ -17,13 +17,11 @@ const divContentStyle={
  function BusinessCustomerSearch() {
      return(
          <div>
-             <BusinessHeader/>
 
             <Container style={divContentStyle}>
                 <BusinessCustomerSearchForm/>
             </Container>
 
-             <BusinessFooter/>
          </div>
 
      );

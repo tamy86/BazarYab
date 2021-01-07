@@ -48,21 +48,12 @@ import React from 'react';
 import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import UserContent from './components/Users/UserContent';
-import UserDiscountReport from './components/Users/UserDiscountReport';
-import UserEditProfile from './components/Users/UserEditProfile';
-
 import UserLogin from './components/Users/UserLogin';
 import BusinessLogin from './components/Business/BusinessLogin';
 import HomeContent from './components/Home/HomeContent';
 
-import BusinessContent from './components/Business/BusinessContent';
-import BusinessCustomerReport from './components/Business/BusinessCustomerReport';
-import BusinessCustomerSearch from './components/Business/BusinessCustomerSearch';
-import BusinessNewCustomer from './components/Business/BusinessNewCustomer';
-import BusinessSettingDiscount from './components/Business/BusinessSettingDiscount';
-import BusinessEditProfile from './components/Business/BusinessEditProfile';
-import UserBusinessReport from './components/Users/UserBusinessReport';
+import BusinessIndex from './components/Business/BusinessIndex';
+import UserIndex from './components/Users/UserIndex';
 
 import axios from "axios";
 
@@ -104,45 +95,45 @@ function App(){
 
                 //user
 
-                <Route exact path="/user/home" component={UserContent}>
+                <Route exact path="/user/home" component={UserIndex}>
 
                 </Route>
 
-                <Route exact path="/user/businessreport" component={UserBusinessReport}>
+                <Route exact path="/user/businessreport" component={UserIndex}>
 
                 </Route>
 
-                <Route exact path="/user/discountsreport" component={UserDiscountReport}>
+                <Route exact path="/user/discountsreport" component={UserIndex}>
 
                 </Route>
 
-                <Route exact path="/user/editprofile" component={UserEditProfile}>
+                <Route exact path="/user/editprofile" component={UserIndex}>
 
                 </Route>
 
                 //business
 
-                <Route exact path="/business/home" component={BusinessContent}>
+                <Route exact path="/business/home" component={BusinessIndex}>
 
                 </Route>
 
-                <Route exact path="/business/customerreport" component={BusinessCustomerReport}>
+                <Route exact path="/business/customerreport" component={BusinessIndex}>
 
                 </Route>
 
-                <Route exact path="/business/customersearch" component={BusinessCustomerSearch}>
+                <Route exact path="/business/customersearch" component={BusinessIndex}>
 
                 </Route>
 
-                <Route exact path="/business/newcustomer" component={BusinessNewCustomer}>
+                <Route exact path="/business/newcustomer" component={BusinessIndex}>
 
                 </Route>
 
-                <Route exact path="/business/settingdiscount" component={BusinessSettingDiscount}>
+                <Route exact path="/business/settingdiscount" component={BusinessIndex}>
 
                 </Route>
 
-                <Route exact path="/business/editprofile" component={BusinessEditProfile}>
+                <Route exact path="/business/editprofile" component={BusinessIndex}>
 
                 </Route>
 

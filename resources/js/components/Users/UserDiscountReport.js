@@ -18,12 +18,12 @@ const divContentStyle={
 function UserDiscountsReport() {
     return(
         <div>
-        <UserHeader/>
+
         <Container style={divContentStyle}>
             <UserDicountsReportTable/>
         </Container>
 
-        <UserFooter/>
+
 
         </div>
 

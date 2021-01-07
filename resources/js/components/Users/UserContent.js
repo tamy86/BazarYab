@@ -18,11 +18,11 @@ const divContentStyle={
 function UserContent(){
     return(
         <div>
-            <UserHeader/>
+
         <Container maxWidth="xl"  style={divContentStyle}>
             <UserContentText/>
         </Container >
-            <UserFooter/>
+
         </div>
     );
 }
