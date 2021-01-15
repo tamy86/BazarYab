@@ -12,6 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import axios from 'axios';
 import BusinessAlerts from "./BusinessAlertShow";
+import App from "../../../app";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -99,8 +100,8 @@ function BusinessLoginForm(){
     const [verifyvalue,setVerifyvalue]=React.useState('');
     const [showerror,setShowerror]=React.useState(false);
     const [errormessage,setErrormesasage]=React.useState('');
-    const[error,setError]=React.useState();
-
+    const [error,setError]=React.useState();
+    const [token,setToken]=React.useState();
 
 
 if(localStorage.getItem('token')!==null) {
@@ -156,7 +157,7 @@ if(localStorage.getItem('token')!==null) {
         const result = phonevalue.match(mobile);
 
         if ((phonevalue !== '') && (result) && (bussinesstype !== undefined)) {
-            axios.post('/api/business/getverify', {'phone': phonevalue, 'businessCategoryId': bussinesstype}).then(
+            axios.post('/api/business/getverify', {'phone': phonevalue, 'bussinesscategoryId': bussinesstype}).then(
                 (res) => {
 
                     // setErrorCode(res.statusCode);
@@ -204,6 +205,55 @@ if(localStorage.getItem('token')!==null) {
     }
 
 
+    // useEffect(()=>{
+    //     function checkVerifyCode () {
+    //         try{
+    //
+    //                 axios.post('/api/business/checkverify', {
+    //                     'phone': phonevalue,
+    //                     'verify': verifyvalue,
+    //                     'bussinesscategoryId': bussinesstype
+    //                 }).then((res) => {
+    //
+    //                     if ((res.data['Success'] === 1)) {
+    //
+    //                         const token = res.data['access_token'];
+    //
+    //                         localStorage.setItem('token', token);
+    //
+    //                         window.location = `/business/home`;
+    //                         setErrormesasage(
+    //                             {
+    //                                 msg: res.data['message'],
+    //                                 key: Math.random(),
+    //                                 errortype: res.data['message type'],
+    //
+    //                             });
+    //                         setShowerror(true);
+    //
+    //
+    //                     }
+    //
+    //                 })
+    //
+    //
+    //         }catch (error) {
+    //             setErrormesasage(
+    //                 {
+    //                     msg: error.response.data['message'],
+    //                     key: Math.random(),
+    //                     errortype: error.response.data['message type'],
+    //                 });
+    //             setShowerror(true);
+    //         }
+    //     };
+    //     checkVerifyCode();
+    // },[token]);
+
+
+
+
+
     function checkVerifyCode() {
 
         if ((verifyvalue !== '')) {
@@ -216,7 +266,6 @@ if(localStorage.getItem('token')!==null) {
                 if ((res.data['Success'] === 1)) {
 
                     const token = res.data['access_token'];
-
 
                     localStorage.setItem('token', token);
 
@@ -255,6 +304,8 @@ if(localStorage.getItem('token')!==null) {
                 }
             );
         }
+
+
     }
 
 

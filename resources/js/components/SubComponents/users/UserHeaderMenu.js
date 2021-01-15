@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createMuiTheme, makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -21,6 +21,8 @@ import PersonIcon from '@material-ui/icons/Person';
 import {Link} from "react-router-dom";
 
 import UserProfileCircleMenu from '../users/UserProfileCircleMenu';
+import axios from "axios";
+import UserAlerts from "../users/UserAlertShow";
 
 
 const drawerWidth = 240;
@@ -140,12 +142,18 @@ const linkstyle= {
     display:'contents'
 };
 
-
+const userphoneStyle={
+    fontSize:'x-large'
+};
 
 function UserHeaderMenu() {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
+
+    const [userphone,setUserphone]=React.useState();
+    const [errormessage,setErrormesasage]=React.useState('');
+    const [showerror,setShowerror]=React.useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -155,8 +163,46 @@ function UserHeaderMenu() {
         setOpen(false);
     };
 
+
+    useEffect(()=> {
+
+
+        const getPhoneBusiness=async ()=>{
+            /*header config in app.js file so for all header need to check auth going and to check */
+            try{
+                const  res=  await axios.get('/api/user/getphone');
+
+                setUserphone(res.data['phone']);
+            }
+            catch(error){
+
+
+                setErrormesasage(
+                    {
+                        msg: error.response.data['message'],
+                        key: Math.random(),
+                        errortype: error.response.data['message type'],
+                    });
+                setShowerror(true);
+            }
+        };
+        getPhoneBusiness();
+    },[setUserphone]);
+
+
+
+
+
+
+
+
     return (
         <div className={classes.root}>
+
+            {showerror ?
+                <UserAlerts key={errormessage.key} errormessage={errormessage.msg} errortype={errormessage.errortype}/>:null
+            }
+
             <CssBaseline />
             <AppBar
                 style={{height:'65px',backgroundColor:'#00BFFF'}}
@@ -196,6 +242,9 @@ function UserHeaderMenu() {
                             {theme.direction === 'rtl' ? <CloseIcon/> : <CloseIcon/>}
 
                         </IconButton>
+
+                        <h2 style={userphoneStyle}> {userphone}</h2>
+
                     </div>
                     <Divider />
 

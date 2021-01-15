@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import PersonIcon from '@material-ui/icons/Person';
 import {Redirect}  from 'react-router-dom';
 import {Link} from "react-router-dom";
+import axios from "axios";
+import UserAlerts from "../users/UserAlertShow";
 
 
 
@@ -24,11 +26,21 @@ const linkstyle= {
     display:'contents'
 };
 
+const nameStyle={
+    fontWeight:'bold',
+    fontSize:'larger',
+};
+
 
 
 function UserProfileCircleMenu(){
 
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [name,setName]=React.useState('');
+    const [family,setFamily]=React.useState('');
+    const [errormessage,setErrormesasage]=React.useState('');
+    const [showerror,setShowerror]=React.useState(false);
+
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -39,9 +51,45 @@ function UserProfileCircleMenu(){
    return <Redirect to='/user/home'/>
     };
 
+
+
+    useEffect(()=> {
+
+
+        const getNameFamilyUser=async ()=>{
+            /*header config in app.js file so for all header need to check auth going and to check */
+            try{
+                const  res=  await axios.get('/api/user/getnamefamily');
+                setName(res.data['name']);
+                setFamily(res.data['family']);
+
+            }
+            catch(error){
+
+                setErrormesasage(
+                    {
+                        msg: error.response.data['message'],
+                        key: Math.random(),
+                        errortype: error.response.data['message type'],
+                    });
+                setShowerror(true);
+            }
+        };
+        getNameFamilyUser();
+    },[setName,setFamily]);
+
+
+
+
+
+
     return(
 
         <div>
+
+            {showerror ?
+                <UserAlerts key={errormessage.key} errormessage={errormessage.msg} errortype={errormessage.errortype}/>:null
+            }
 
             <IconButton
                 color="primary"
@@ -63,6 +111,12 @@ function UserProfileCircleMenu(){
                 onClose={handleClose}
 
             >
+                <Link style={linkstyle} to='/business/editprofile'>
+                    <MenuItem style={styleMenuItem}  onClick={handleClose}>
+                        <li style={nameStyle}>{name} {family}</li>
+                    </MenuItem>
+                </Link>
+
                 <Link style={linkstyle} to='/user/editprofile'>
                 <MenuItem style={styleMenuItem}  onClick={handleClose}>ویرایش پروفایل</MenuItem>
                 </Link>

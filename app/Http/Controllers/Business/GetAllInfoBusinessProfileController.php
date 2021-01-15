@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Business;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GetAllInfoBusinessProfileController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['checkVerify', 'getVerify']]);
+        $this->middleware('auth:businessusers', ['except' => ['checkVerify', 'getVerify']]);
+        Auth::shouldUse('businessusers');
     }
 
     public function getToken(){
@@ -33,6 +35,7 @@ class GetAllInfoBusinessProfileController extends Controller
             'token'=>$userToken
 
         ]);
+
         }catch (\Exception $exception)
             {
                 return response()->json([

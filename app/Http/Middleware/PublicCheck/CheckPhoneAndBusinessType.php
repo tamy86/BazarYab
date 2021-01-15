@@ -19,7 +19,7 @@ class CheckPhoneAndBusinessType extends Middleware
     {
         $phonevalidaty="/(0|\+98)?([ ]|,|-|[()]){0,2}9[1|2|3|4]([ ]|,|-|[()]){0,2}(?:[0-9]([ ]|,|-|[()]){0,2}){8}/";
         $phone=$request->input('phone');
-        $busineeType=$request->input('businessCategoryId');
+        $busineeType=$request->input('bussinesscategoryId');
 
         if (!(preg_match($phonevalidaty,$phone))){
 

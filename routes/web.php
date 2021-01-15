@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Business\RegisterBusinessController;
+use Illuminate\Support\Facades\Auth;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,13 +16,14 @@ use App\Http\Controllers\Business\RegisterBusinessController;
 |
 */
 
+
 Route::get('/', function () {
     return view('Home.welcome');
 });
 
 Route::get('/user/login', function () {
     return view('User.UserLogin');
-});
+})->name('userlogin');;
 
 Route::get('/user/home', function () {
     return view('User.UserHome');
@@ -38,12 +41,22 @@ Route::get('/user/editprofile', function () {
     return view('User.UserEditProfile');
 });
 
-
+//public function __construct() {
+//    /*middleware am mitoone comment she kar mikone*/
+//    $this->middleware('auth:businessusers', ['except' => ['checkVerify', 'getVerify']]);
+//    Auth::shouldUse('businessusers');
+//}
+//->controller[Auth::shouldUse('businessusers')]
 
 Route::get('/business/login', function () {
     return view('Business.BusinessLogin');
 })->name('businesslogin');
 
+
+//Route::group(['middleware'=>'auth:businessusers'],function(){
+//    Route::get('/business/home',[\App\Http\Controllers\Business\GetAllInfoBusinessProfileController::class,'getToken']);
+//
+//});
 Route::get('/business/home', function () {
     return view('Business.BusinessHome');
 });

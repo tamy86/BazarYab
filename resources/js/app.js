@@ -1,3 +1,4 @@
+import BusinessAlerts from "./components/SubComponents/business/BusinessAlertShow";
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -44,7 +45,7 @@ require('./bootstrap');
 {/*require('./components/Business/BusinessCustomerSearch');*/}
 
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
@@ -60,7 +61,7 @@ import axios from "axios";
 
 
 axios.defaults.baseURL='http://127.0.0.1:8000/';
-axios.defaults.headers.common['Authorization']='Bearer'+ localStorage.getItem('token');
+axios.defaults.headers.common['Authorization']='Bearer '+ localStorage.getItem('token');
 // BusinessContent.defaults.headers.common['Authorization']='Bearer'+ localStorage.getItem('token');
 // BusinessLogin.defaults.headers.common['Authorization']='Bearer'+ localStorage.getItem('token');
 // options.headers.set('Authorization','Bearer'+localStorage.getItem('token'));

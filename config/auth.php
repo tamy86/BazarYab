@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'api',
+        'guard' => 'businessusers',
         'passwords' => 'users',
     ],
 
@@ -41,11 +41,22 @@ return [
             'provider' => 'users',
         ],
 
-        'api' => [
+        'businessusers' => [
             'driver' => 'jwt',
             'provider' => 'users',
             'hash' => false,
         ],
+
+        'webcustomerusers' => [
+            'driver' => 'session',
+            'provider' => 'customerusers',
+        ],
+
+        'customerusers'=>[
+            'driver' => 'jwt',
+            'provider' => 'customerusers',
+            'hash' => false,
+        ]
     ],
 
     /*
@@ -70,6 +81,12 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Business\Businessuser::class,
         ],
+
+
+             'customerusers' => [
+                     'driver' => 'eloquent',
+                      'model' => App\Models\User\Customeruser::class,
+                    ],
 
         // 'users' => [
         //     'driver' => 'database',

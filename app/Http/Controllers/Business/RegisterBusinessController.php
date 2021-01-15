@@ -15,14 +15,16 @@ use Illuminate\Support\Facades\Auth;
 class RegisterBusinessController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['checkVerify', 'getVerify']]);
+        /*middleware am mitoone comment she kar mikone*/
+        $this->middleware('auth:businessusers', ['except' => ['checkVerify', 'getVerify']]);
+        Auth::shouldUse('businessusers');
     }
 
 
     public function getVerify(Request $request){
 
         $phoneNo=$request->input('phone');
-        $businessType=$request->input('businessCategoryId');
+        $businessType=$request->input('bussinesscategoryId');
         $verifyCode=rand(10000,99999);
         $ipBusiness=$request->ip();
 
@@ -165,7 +167,6 @@ class RegisterBusinessController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user(),
             'message'=>'شما به درستی اعتبار سنجی شدید و لاگین کردید',
             'message type'=>'success',
             'Success'=>1,

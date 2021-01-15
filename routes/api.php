@@ -6,6 +6,8 @@ use App\Http\Controllers\Business\LoginBusinessController;
 use App\Http\Controllers\Business\RegisterBusinessController;
 use App\Http\Controllers\Business\GetAllInfoBusinessSettingsController;
 use App\Http\Controllers\Business\GetAllInfoBusinessProfileController;
+use App\Http\Controllers\User\RegisterUserController;
+use App\Http\Controllers\User\GetAllInfoUserProfileController;
 
 use App\Http\Controllers\AuthController;
 
@@ -19,11 +21,6 @@ use App\Http\Controllers\AuthController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::get('/business/businesslist',[LoginBusinessController::class,'listBusinessCategory']);
 Route::post('/business/getverify',[RegisterBusinessController::class,'getVerify'])->middleware('checkphone');
 
@@ -40,22 +37,21 @@ function() {
 });
 
 
-//
-//Route::group([
-//    'middleware' => 'api',
-//    'prefix' => 'auth'
-//],
-//    function ($router) {
-        Route::post('/business/checkverify', [RegisterBusinessController::class, 'checkVerify'])->middleware('checkverify');
-//        Route::get('/business/home', [RegisterBusinessController::class, 'test']);
-
-//    });
-
+Route::post('/business/checkverify', [RegisterBusinessController::class, 'checkVerify'])->middleware('checkverify');
 
 Route::get('/business/gettoken',[GetAllInfoBusinessProfileController::class,'getToken']);
 Route::get('/business/getnamefamily',[GetAllInfoBusinessProfileController::class,'getNameFamily']);
 Route::get('/business/getphone',[GetAllInfoBusinessProfileController::class,'getPhone']);
 
+
+
+
+Route::post('/user/getverify',[RegisterUserController::class,'getVerify'])->middleware('checkphoneuser');
+Route::post('/user/checkverify', [RegisterUserController::class, 'checkVerify'])->middleware('checkverifyuser');
+
+Route::get('/user/gettoken',[GetAllInfoUserProfileController::class,'getToken']);
+Route::get('/user/getnamefamily',[GetAllInfoUserProfileController::class,'getNameFamily']);
+Route::get('/user/getphone',[GetAllInfoUserProfileController::class,'getPhone']);
 
 
 //Route::group([
@@ -69,3 +65,4 @@ Route::get('/business/getphone',[GetAllInfoBusinessProfileController::class,'get
 //    Route::post('/refresh', [AuthController::class, 'refresh']);
 //    Route::get('/user-profile', [AuthController::class, 'userProfile']);
 //});
+
