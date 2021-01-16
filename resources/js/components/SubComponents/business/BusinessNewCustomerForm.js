@@ -95,7 +95,7 @@ function BusinessNewCustomerForm(){
                 <Container maxWidth='xs' xs='6'>
                     <TextField
                         id="PresentedMobileNo"
-                        label="شماره همراه معرف"
+                        label="تلفن همراه معرف"
                         InputProps={{endAdornment:
                                 <IconButton
                                     color="primary"
