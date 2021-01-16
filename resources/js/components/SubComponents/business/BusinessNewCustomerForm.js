@@ -7,7 +7,8 @@ import Button from '@material-ui/core/Button';
 import CancelIcon from '@material-ui/icons/Cancel';
 import PhoneAndroidIcon from '@material-ui/icons/PhoneAndroid';
 import PersonIcon from '@material-ui/icons/Person';
-
+import SearchIcon from '@material-ui/icons/Search';
+import IconButton from '@material-ui/core/IconButton';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -78,6 +79,8 @@ const spaceBetwenButton={
 
 function BusinessNewCustomerForm(){
 
+    const [disableForm,setDisableForm]=React.useState(true);
+
     const classes = useStyles();
 
     return(
@@ -88,10 +91,32 @@ function BusinessNewCustomerForm(){
             </div>
 
             <form className={classes.root} style={formLogin}>
+
+                <Container maxWidth='xs' xs='6'>
+                    <TextField
+                        id="PresentedMobileNo"
+                        label="شماره همراه معرف"
+                        InputProps={{endAdornment:
+                                <IconButton
+                                    color="primary"
+                                    aria-label="upload picture"
+                                    component="span"
+                                    style={{backgroundColor:"#e6e6e6",bottom:'5px'}}
+                                    onClick={()=>{setDisableForm(false);}}
+                                >
+                                    <SearchIcon />
+                                </IconButton>}}
+
+                    />
+                </Container>
+
+
+
                 <Container maxWidth='xs' xs='6'>
                 <TextField
                     id="MobileNo"
                     label="تلفن همراه"
+                    disabled={disableForm}
                     InputProps={{endAdornment:<PhoneAndroidIcon/>}}
                 />
                 </Container>
@@ -99,6 +124,7 @@ function BusinessNewCustomerForm(){
                 <TextField
                     id="name"
                     label="نام"
+                    disabled={disableForm}
                     InputProps={{endAdornment:<PersonIcon/>}}
                 />
                 </Container>
@@ -106,11 +132,12 @@ function BusinessNewCustomerForm(){
                 <TextField
                     id="family"
                     label="نام خانوادگی"
+                    disabled={disableForm}
                     InputProps={{endAdornment:<PersonIcon/>}}
                 />
                 </Container>
-                <div style={spaceBetwenButton}>
-                    <Button variant="outlined" color="primary" style={styleButton}>
+                <div style={spaceBetwenButton} >
+                    <Button disabled={disableForm} variant="outlined" color="primary" style={styleButton}>
                         ذخیره فرم<SaveIcon/>
                     </Button>
                     <Button variant="outlined" color="primary" style={styleButton}>

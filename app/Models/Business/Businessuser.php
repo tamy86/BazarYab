@@ -33,6 +33,13 @@ class Businessuser extends  Authenticatable implements JWTSubject
         return $this->hasMany(Businesscategory::class);
     }
 
+
+    public function Businessnewcustomer(){
+            return $this->belongsToMany(Businessnewcustomer::class);
+    }
+
+
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
