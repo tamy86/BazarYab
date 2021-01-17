@@ -273,9 +273,9 @@ function BusinessHeaderMenu() {
 
 
                         <Link style={linkstyle} to='/business/customersearch'>
-                        <ListItem button key={'جستجو مشتری'} className={classes.list}>
+                        <ListItem button key={'جستجو سریع مشتری'} className={classes.list}>
                             <ListItemIcon><SearchIcon/></ListItemIcon>
-                            <ListItemText  primary={'جستجو مشتری'}/>
+                            <ListItemText  primary={'جستجو سریع مشتری'}/>
                         </ListItem>
                         </Link>
 

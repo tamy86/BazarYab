@@ -7,9 +7,19 @@ use App\Models\Business\Businessnocustomer;
 use App\Models\Business\Businessnomonth;
 use App\Models\Business\Businesspercent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GetAllInfoBusinessSettingsController extends Controller
 {
+    public function __construct() {
+        /*middleware am mitoone comment she kar mikone*/
+        $this->middleware('auth:businessusers', ['except' => ['checkVerify', 'getVerify']]);
+        Auth::shouldUse('businessusers');
+    }
+
+
+
+
     public function listNoCustomer()
     {
         $businessNoCustomer = Businessnocustomer::all('no_customer','id');
