@@ -6,8 +6,10 @@ use App\Http\Controllers\Business\LoginBusinessController;
 use App\Http\Controllers\Business\RegisterBusinessController;
 use App\Http\Controllers\Business\GetAllInfoBusinessSettingsController;
 use App\Http\Controllers\Business\GetAllInfoBusinessProfileController;
+use App\Http\Controllers\Business\CustomerBusinessController;
 use App\Http\Controllers\User\RegisterUserController;
 use App\Http\Controllers\User\GetAllInfoUserProfileController;
+
 
 use App\Http\Controllers\AuthController;
 
@@ -22,7 +24,7 @@ use App\Http\Controllers\AuthController;
 |
 */
 Route::get('/business/businesslist',[LoginBusinessController::class,'listBusinessCategory']);
-Route::post('/business/getverify',[RegisterBusinessController::class,'getVerify'])->middleware('checkphone');
+
 
 
 Route::group([
@@ -38,10 +40,19 @@ function() {
 
 
 Route::post('/business/checkverify', [RegisterBusinessController::class, 'checkVerify'])->middleware('checkverify');
+Route::post('/business/getverify',[RegisterBusinessController::class,'getVerify'])->middleware('checkphone');
 
 Route::get('/business/gettoken',[GetAllInfoBusinessProfileController::class,'getToken']);
 Route::get('/business/getnamefamily',[GetAllInfoBusinessProfileController::class,'getNameFamily']);
 Route::get('/business/getphone',[GetAllInfoBusinessProfileController::class,'getPhone']);
+
+Route::get('/business/businessuserid',[CustomerBusinessController::class,'getBusinessUserId']);
+
+Route::post('/business/searchpresented',[CustomerBusinessController::class,'searchPresented']);
+
+Route::post('/business/newcustomer',[CustomerBusinessController::class,'newCustomer']);
+
+Route::post('/business/searchcustomer',[CustomerBusinessController::class,'searchCustomer']);
 
 
 

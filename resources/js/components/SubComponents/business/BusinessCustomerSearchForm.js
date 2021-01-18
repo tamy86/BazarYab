@@ -5,6 +5,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import { makeStyles } from '@material-ui/core/styles';
+import BusinessAlerts from './BusinessAlertShow';
+import axios from 'axios';
 
 
 
@@ -48,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 const styleBgForm= {
     backgroundColor: '#f0f1f4',
-    direction: 'rtl',
+    direction: 'ltr',
     width: '70%',
     height: '100%',
     minWidth:'270px',
@@ -92,17 +94,51 @@ function BusinessCustomerSearchForm(){
 
     const [showResultSearch,setShowResultSearch]=useState(true);
     const [enableAddShoping,setEnableAddShoping]=useState(true);
+    const [customerPhoneNo,setCustomerPhoneNo]=useState();
+    const [showerror,setShowerror]=React.useState(false);
+    const [errormessage,setErrormesasage]=React.useState('');
 
     const classes = useStyles();
+
+
+    function sendCustomerPhoneNo(){
+        // (0|\+98)?([ ]|,|-|[()]){0,2}9[1|2|3|4]([ ]|,|-|[()]){0,2}(?:[0-9]([ ]|,|-|[()]){0,2}){8}
+
+        const mobile = /^(09)(12|19|35|36|37|38|39|32|21|22|31|34|13|14|18|17|16|15|11|10|20|90|91|92|93|94|01|02|03|04|05|30|33|)\d{7}$/g;
+        const result = customerPhoneNo.match(mobile);
+        if ((result)&&(customerPhoneNo !== '')){
+            axios.post('/api/business/searchcustomer',{'customerphone':customerPhoneNo}) .then((res)=>
+                {
+                    alert()
+                })
+        }else{
+            setErrormesasage(
+                {
+                    msg: 'شماره همراه صحیح نمیباشد',
+                    key: Math.random(),
+                    errortype: 'warning'
+                });
+
+            setShowerror(true);
+        }
+
+    }
+
 
 
     return(
       <Container style={styleBgForm}>
 
+          {showerror ?
+              <BusinessAlerts key={errormessage.key} errormessage={errormessage.msg} errortype={errormessage.errortype}/>:null
+          }
 
             <div className="card-header" style={headerReportForm}>
+
+
+
                 <SearchIcon/>
-                جستجوی مشتریان
+                جستجوی سریع مشتریان
 
             </div>
 
@@ -110,15 +146,17 @@ function BusinessCustomerSearchForm(){
 
                 <TextField
                     id="searchMobileNo"
-                    label="شماره همراه را وارد نمایید"
+                    label="شماره همراه را وارد نمایید(09xxxxxxxxx)"
                     type="number"
+                    onChange={event=>setCustomerPhoneNo(event.target.value)}
+                    value={customerPhoneNo}
                     InputProps={{endAdornment:
                             <IconButton
                                 color="primary"
                                 aria-label="upload picture"
                                 component="span"
                                 style={{backgroundColor:"#e6e6e6",bottom:'5px'}}
-                                onClick={()=>{setShowResultSearch(false);setEnableAddShoping(false);}}
+                                onClick={()=>{setShowResultSearch(false);setEnableAddShoping(false);sendCustomerPhoneNo();}}
                             >
                             <SearchIcon />
                         </IconButton>}}
