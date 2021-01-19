@@ -14,6 +14,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import BusinessAlerts from "./BusinessAlertShow";
 
 
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContentText from  '@material-ui/core/DialogContentText';
+
+
 const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
@@ -77,6 +85,11 @@ const styleButton={
 const spaceBetwenButton={
     paddingTop:'40px',
 };
+const textDialog={
+    fontFamily:'IRANSans',
+    direction:'rtl',
+
+};
 
 function BusinessNewCustomerForm(){
 
@@ -89,8 +102,20 @@ function BusinessNewCustomerForm(){
     const [errormessage,setErrormesasage]=React.useState('');
 
 
+    const [searchMessage,setSearchMessage]=React.useState('');
+    const [openDialog,setOpenDialog]=React.useState(false);
+
     const classes = useStyles();
 
+
+
+    const handleClickOpen = () => {
+        setOpenDialog(true);
+    };
+
+    const handleClose = () => {
+        setOpenDialog(false);
+    };
 
 
     /*check auth user to check has aceess or not if dont have access get error and check local storage with token*/
@@ -139,19 +164,29 @@ function BusinessNewCustomerForm(){
                 }).then((res)=>{
 
 
-                    if((res.status===200)&&((res.data['Success']===1)||(res.data['Success']===2)))
+                    if((res.status===200)&&(res.data['Success']===1))
                     {
 
                         setBusinessUserId(res.data['business_user_id']);
                         setPresentedId(res.data['presented_id']);
-                        setErrormesasage({
-                           msg: res.data['message'],
-                           key: Math.random(),
-                           errortype:res.data['message_type'],
-                        });
-                        setShowerror(true);
+                        setSearchMessage(res.data['message']);
+
+                        setOpenDialog(true);
                         setDisableForm(false);
-                    }else{
+
+
+                    }else
+                        if((res.status===200)&&(res.data['Success']===2))
+                        {
+                            setBusinessUserId(res.data['business_user_id']);
+                            setPresentedId(res.data['presented_id']);
+                            setSearchMessage(res.data['message']);
+
+                            setOpenDialog(true);
+                            setDisableForm(false);
+                        }
+                        else
+                        {
 
                         setErrormesasage({
                             msg: res.data['message'],
@@ -186,6 +221,29 @@ function BusinessNewCustomerForm(){
             {showerror ?
                 <BusinessAlerts key={errormessage.key} errormessage={errormessage.msg} errortype={errormessage.errortype}/>:null
             }
+
+
+            <Dialog open={openDialog} onClose={handleClose} style={textDialog}>
+
+                <DialogTitle>
+                    <h6 style={textDialog}>مشخصات شماره همراه وارد شده</h6>
+                </DialogTitle>
+
+                <DialogContent>
+                    <DialogContentText style={textDialog}>
+                        {searchMessage}
+                    </DialogContentText>
+                </DialogContent>
+
+                <DialogActions>
+                    <Button autoFocus onClick={handleClose} color="primary">
+                        <h3 style={textDialog}>بستن</h3>
+                    </Button>
+                </DialogActions>
+
+            </Dialog>
+
+
 
             <div className="card-header" style={headerLoginForm}>
                 فرم مشتری جدید<PersonAddIcon style={mobileIconStyle}/>
