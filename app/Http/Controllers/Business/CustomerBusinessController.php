@@ -10,71 +10,181 @@ use App\Models\Business\Businessnewcustomer;
 class CustomerBusinessController extends Controller
 {
 
-    public function getBusinessUserId(){
+    public function searchPresented(Request $request){
+
+        /*get business user id by authorize set in header and put in request to insert in DB*/
+
+        try {
+
+            $businessUserId = auth()->user()->id;
+        }
+        catch (\Exception $exception){
+            if($exception) {
+                return response()->json([
+                    'message' => '1101 خطای عدم دسترسی یا مشکل ارتباط با سرور',
+                    'message_type' => 'error',
+
+                ],401);
+            }
+        }
+
+
+
         try{
 
-            $businessUserId=auth()->user()->id;
-
-            return response()->json([
-                 'bussiness_user_id'=>$businessUserId,
-            ]);
-
-        }catch (\Exception $exception){
-
-            return response()->json([
-                'message'=>'مشکل در اتصال به دیتا بیس با پشتیبانی تماس بگیرید ',
-                'message type'=>'error',
-            ],500);
-
-        }
-    }
-
-
-    public function searchPresented(Request $request){
         $presentedPhone=$request->input('presentedphone');
-        $businessUserId=$request->input('businessuserid');
 
 
 
 
-            $presentedExist = Businessnewcustomer::where('phone', $presentedPhone)->where('businessUserId', $businessUserId)->exists();
-
-            if ($presentedExist) {
-                $presentedId = Businessnewcustomer::select('id')->where('phone', $presentedPhone)->where('businessUserId', $businessUserId);
-
-                return response()->json([
-                    'presented_id' => $presentedId,
-                    'business_user_id' => $businessUserId,
-                    'message' => 'شماره همراه وارد شده جزو مشتریان این کسب و کار میباشد',
-                    'message_type' => 'success',
-                    'Success' => 1,
-                ], 200);
+    $presentedExist = Businessnewcustomer::where('phone', $presentedPhone)->where('businessUserId', $businessUserId)->exists();
 
 
-            } else
-                if($presentedExist==false){
-                return response()->json([
-                    'presented_id' => null,
-                    'business_user_id' => $businessUserId,
-                    'message' => 'شماره همراه وارد شده جزو مشتریان این کسب و کار نمیباشد',
-                    'message_type' => 'warning',
-                    'Success' => 2,
-                ], 200);
-            }
-            else{
-                return response()->json([
-                    'message' => '1001 خطا در ارتباط با سرور دیتا بیس لطفا با پشتیبانی تماس بگیرید',
-                    'message_type' => 'error',
-                ], 500);
-            }
 
 
+
+    if ($presentedExist) {
+
+        $presentedId = Businessnewcustomer::Select('id')
+            ->where('phone', $presentedPhone)
+            ->where('businessUserId', $businessUserId)
+            ->get();
+
+            foreach ($presentedId as $dataPresentedId)
+             {
+                    $presentedID=$dataPresentedId->id;
+                  }
+
+            return response()->json([
+                'presented_id' => $presentedID,
+                'business_user_id' => $businessUserId,
+                'message' => 'شماره همراه وارد شده جزو مشتریان این کسب و کار میباشد',
+                'message_type' => 'success',
+                'Success' => 1,
+            ], 200);
+
+
+    } else
+        if (($presentedExist == false) && ($businessUserId != null)) {
+            return response()->json([
+                'presented_id' => null,
+                'business_user_id' => $businessUserId,
+                'message' => 'شماره همراه وارد شده جزو مشتریان این کسب و کار نمیباشد',
+                'message_type' => 'warning',
+                'Success' => 2,
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'مشکل در ارسال اطلاعات لطفا مجدد تلاش نمایید',
+                'message_type' => 'error',
+                'Success' => 2,
+            ], 400);
+        }
+
+}catch (\Exception $exception)
+    {
+        if($exception) {
+            return response()->json([
+                'message' => '1101 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید',
+                'message_type' => 'error',
+
+
+            ],500);
+        }
+
+    }
 
 
     }
 
 
     public function newCustomer(Request $request){
+
+        /*get business user id by authorize set in header and put in request to insert in DB*/
+
+        try {
+
+            $businessUserId = auth()->user()->id;
+        }
+        catch (\Exception $exception){
+            if($exception) {
+                return response()->json([
+                    'message' => '1102 خطای عدم دسترسی یا مشکل ارتباط با سرور',
+                    'message_type' => 'error',
+
+                ],401);
+            }
+        }
+
+
+
+        /*to insert new customer in DB and add business user id to other request*/
+        try {
+
+        $customerPhone=$request->input('customerphone');
+        $customerName=$request->input('customername');
+        $customerFamily=$request->input('customerfamily');
+        $presentedId=$request->input('presentedid');
+        $presentedPhone=$request->input('presentedphone');
+
+
+
+            $customerExist = Businessnewcustomer::where('phone', $customerPhone)
+                ->where('businessUserId', $businessUserId)
+                ->exists();
+
+
+
+                $presentedExist = Businessnewcustomer::where('id',$presentedId)->where('businessUserId', $businessUserId)
+                ->where('phone', $presentedPhone)
+                    ->exists();
+
+            if ((($presentedExist) || ($presentedId == null)) && (!$customerExist)) {
+                //insert to DB
+                $userBusinessRegister = new Businessnewcustomer();
+                $userBusinessRegister->businessUserId = $businessUserId;
+                $userBusinessRegister->presentedId = $presentedId;
+                $userBusinessRegister->phone = $customerPhone;
+                $userBusinessRegister->name = $customerName;
+                $userBusinessRegister->family = $customerFamily;
+                $userBusinessRegister->created_at = new \DateTime();
+                $userBusinessRegister->updated_at = new \DateTime();
+                $userBusinessRegister->save();
+
+                return response()->json([
+                    'Success' => 1,
+                    'message' => 'مشتری جدید برای این کسب و کار با موفقیت ثبت شد',
+                    'message_type' => 'success',
+                ], 200);
+            } else
+
+                if ($customerExist) {
+                    return response()->json([
+                        'Success' => 0,
+                        'message' => 'مشتری ثبت شده قبلا در لیست مشتریان این کسب و کار قرار گرفته است',
+                        'message_type' => 'warning',
+                        'jhg'=>$customerExist,
+                        'iu'=>$presentedExist,
+
+                    ], 409);
+
+
+                }
+
+
+        }
+        catch (\Exception $exception) {
+
+                if($exception) {
+                    return response()->json([
+                        'message' => '1103 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید',
+                        'message_type' => 'error',
+
+                    ]);
+                }
+
+    }
+
 
 
     }

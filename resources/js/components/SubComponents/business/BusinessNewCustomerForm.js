@@ -97,10 +97,13 @@ function BusinessNewCustomerForm(){
     const [presentedPhone,setPresentedPhone]=React.useState();
     const [presentedId,setPresentedId]=React.useState();
     const [businessUserId,setBusinessUserId]=React.useState();
-    const[error,setError]=React.useState();
+    const [error,setError]=React.useState();
     const [showerror,setShowerror]=React.useState(false);
     const [errormessage,setErrormesasage]=React.useState('');
 
+    const [customerPhone,setCustomerPhone]=React.useState('');
+    const [customerName,setCustomerName]=React.useState('');
+    const [customerFamily,setCustomerFamily]=React.useState('');
 
     const [searchMessage,setSearchMessage]=React.useState('');
     const [openDialog,setOpenDialog]=React.useState(false);
@@ -108,47 +111,9 @@ function BusinessNewCustomerForm(){
     const classes = useStyles();
 
 
-
-    const handleClickOpen = () => {
-        setOpenDialog(true);
-    };
-
-    const handleClose = () => {
+    const handleDialogClose = () => {
         setOpenDialog(false);
     };
-
-
-    /*check auth user to check has aceess or not if dont have access get error and check local storage with token*/
-
-    useEffect(()=> {
-
-
-        const getBusinessUserId=async ()=>{
-            /*header config in app.js file so for all header need to check auth going and to check */
-            /*baseUrl config in app.js for all url*/
-            try{
-                const  res=  await axios.get('/api/business/businessuserid');
-
-                setBusinessUserId(res.data['bussiness_user_id']);
-
-            }
-            catch(error){
-                setError(error.response.status);
-                setErrormesasage(
-                    {
-                        msg: error.response.data['message'],
-                        key: Math.random(),
-                        errortype: error.response.data['message type'],
-                    });
-                setShowerror(true);
-            }
-        };
-        getBusinessUserId();
-    },[setBusinessUserId]);
-
-
-
-
 
 
     function searchPresentedPhone(){
@@ -160,7 +125,7 @@ function BusinessNewCustomerForm(){
             axios.post('/api/business/searchpresented',
                 {
                     'presentedphone':presentedPhone,
-                    'businessuserid':businessUserId,
+
                 }).then((res)=>{
 
 
@@ -185,25 +150,21 @@ function BusinessNewCustomerForm(){
                             setOpenDialog(true);
                             setDisableForm(false);
                         }
-                        else
-                        {
-
-                        setErrormesasage({
-                            msg: res.data['message'],
-                            key: Math.random(),
-                            errortype:res.data['message_type'],
-                        });
-                        setShowerror(true);
-                        }
-
-
+            }).catch((error)=>{
+                setError(error.response.status);
+                setErrormesasage({
+                    msg: error.response.data['message'],
+                    key: Math.random(),
+                    errortype:error.response.data['message_type'],
+                });
+                setShowerror(true);
 
             });
 
         }else{
             setErrormesasage(
                 {
-                    msg: 'شماره همراه صحیح نمیباشد',
+                    msg: 'شماره همراه صحیح نمی باشد',
                     key: Math.random(),
                     errortype: 'warning'
                 });
@@ -215,6 +176,103 @@ function BusinessNewCustomerForm(){
 
 
 
+function saveNewCustomerForm(){
+    const mobile = /^(09)(12|19|35|36|37|38|39|32|21|22|31|34|13|14|18|17|16|15|11|10|20|90|91|92|93|94|01|02|03|04|05|30|33|)\d{7}$/g;
+    const charFarsi=/^[ آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیئ\s]+$/;
+
+    const result = customerPhone.match(mobile);
+    const resultCharFarsiName = customerName.match(charFarsi);
+    const resultCharFarsiFamily = customerFamily.match(charFarsi);
+
+    
+    
+if((!result)&&(!resultCharFarsiName)&&(!resultCharFarsiFamily))
+{
+    setErrormesasage(
+        {
+            msg: 'شماره همراه، نام یا نام خانوادگی صحیح نمیباشد. (نام و نام خانوادگی باید فارسی باشد)',
+            key: Math.random(),
+            errortype: 'warning'
+        });
+
+    setShowerror(true);
+
+}else
+
+    if((!result)){
+        setErrormesasage(
+            {
+                msg: 'شماره همراه صحیح نمیباشد',
+                key: Math.random(),
+                errortype: 'warning'
+            });
+
+        setShowerror(true);
+
+}else
+    if(!resultCharFarsiName)
+    {
+        setErrormesasage(
+            {
+                msg: ' نام صحیح نمیباشد. (نام و نام خانوادگی باید فارسی باشد)',
+                key: Math.random(),
+                errortype: 'warning'
+            });
+
+        setShowerror(true);
+
+    }else
+        if(!resultCharFarsiFamily){
+
+            setErrormesasage(
+                {
+                    msg: 'نام خانوادگی صحیح نمیباشد. (نام و نام خانوادگی باید فارسی باشد)',
+                    key: Math.random(),
+                    errortype: 'warning'
+                });
+
+            setShowerror(true);
+
+        }else{
+
+                axios.post('/api/business/newcustomer', {
+                    'customerphone': customerPhone,
+                    'customername': customerName,
+                    'customerfamily': customerFamily,
+                    'presentedid': presentedId,
+                    'presentedphone': presentedPhone,
+                }).then((res) => {
+
+                    if ((res.data['Success'] === 1))
+                    {
+                        setErrormesasage(
+                            {
+                                msg: res.data['message'],
+                                key: Math.random(),
+                                errortype: res.data['message_type'],
+                            });
+
+                        setShowerror(true);
+                        }
+
+                }).catch ((error) =>{
+                setErrormesasage(
+                    {
+                        msg: error.response.data['message'],
+                        key: Math.random(),
+                        errortype: error.response.data['message_type'],
+                    });
+                setShowerror(true);
+
+            });
+           
+           
+        }
+
+}
+
+
+
     return(
         <Container  style={styleBgForm}>
 
@@ -223,7 +281,7 @@ function BusinessNewCustomerForm(){
             }
 
 
-            <Dialog open={openDialog} onClose={handleClose} style={textDialog}>
+            <Dialog open={openDialog} onClose={handleDialogClose} style={textDialog}>
 
                 <DialogTitle>
                     <h6 style={textDialog}>مشخصات شماره همراه وارد شده</h6>
@@ -236,7 +294,7 @@ function BusinessNewCustomerForm(){
                 </DialogContent>
 
                 <DialogActions>
-                    <Button autoFocus onClick={handleClose} color="primary">
+                    <Button autoFocus onClick={handleDialogClose} color="primary">
                         <h3 style={textDialog}>بستن</h3>
                     </Button>
                 </DialogActions>
@@ -277,29 +335,41 @@ function BusinessNewCustomerForm(){
                 <Container maxWidth='xs' xs='6'>
                 <TextField
                     id="MobileNo"
-                    label="تلفن همراه"
+                    label="تلفن همراه(0912xxxxxxx)"
                     disabled={disableForm}
+                    onChange={event=>setCustomerPhone(event.target.value)}
+                    value={customerPhone}
                     InputProps={{endAdornment:<PhoneAndroidIcon/>}}
                 />
                 </Container>
                 <Container maxWidth='xs' xs='6'>
                 <TextField
                     id="name"
-                    label="نام"
+                    label="نام (فارسی)"
                     disabled={disableForm}
+                    onChange={event=>setCustomerName(event.target.value)}
+                    value={customerName}
                     InputProps={{endAdornment:<PersonIcon/>}}
                 />
                 </Container>
                 <Container maxWidth='xs' xs='6'>
                 <TextField
                     id="family"
-                    label="نام خانوادگی"
+                    label="نام خانوادگی (فارسی)"
                     disabled={disableForm}
+                    onChange={event=>setCustomerFamily(event.target.value)}
+                    value={customerFamily}
                     InputProps={{endAdornment:<PersonIcon/>}}
                 />
                 </Container>
                 <div style={spaceBetwenButton} >
-                    <Button disabled={disableForm} variant="outlined" color="primary" style={styleButton}>
+                    <Button
+                        disabled={disableForm}
+                        variant="outlined"
+                        color="primary"
+                        style={styleButton}
+                        onClick={()=>{saveNewCustomerForm();}}
+                    >
                         ذخیره فرم<SaveIcon/>
                     </Button>
                     <Button variant="outlined" color="primary" style={styleButton}>

@@ -15,10 +15,12 @@ class LoginBusinessController extends Controller
             return response()->json($businessCtegory);
         }catch (\Exception $exception)
         {
-            return response()->json([
-                'message'=>'مشکل در اتصال به دیتا بیس با پشتیبانی تماس بگیرید ',
-                'message type'=>'error',
-            ],500);
+            if($exception) {
+                return response()->json([
+                    'message' => '1401 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید ',
+                    'message type' => 'error',
+                ], 500);
+            }
         }
 
     }

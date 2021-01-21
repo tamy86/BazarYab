@@ -38,10 +38,12 @@ class GetAllInfoUserProfileController extends Controller
 
             ]);
         } catch (\Exception $exception) {
-            return response()->json([
-                'message' => 'مشکل در اتصال به دیتا بیس با پشتیبانی تماس بگیرید ',
-                'message type' => 'error',
-            ], 500);
+            if($exception) {
+                return response()->json([
+                    'message' => '5101 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید ',
+                    'message type' => 'error',
+                ], 500);
+            }
         }
     }
 
@@ -57,10 +59,12 @@ class GetAllInfoUserProfileController extends Controller
             ]);
 
         } catch (\Exception $exception) {
-            return response()->json([
-                'message' => 'مشکل در اتصال به دیتا بیس با پشتیبانی تماس بگیرید ',
-                'message type' => 'error',
-            ], 500);
+            if($exception) {
+                return response()->json([
+                    'message' => '5102 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید ',
+                    'message type' => 'error',
+                ], 500);
+            }
         }
 
 
@@ -78,11 +82,14 @@ class GetAllInfoUserProfileController extends Controller
                 'name' => $userName,
                 'family' => $userFamily,
             ]);
-        } catch (\Exception $exception) {
-            return response()->json([
-                'message' => 'مشکل در اتصال به دیتا بیس با پشتیبانی تماس بگیرید ',
-                'message type' => 'error',
-            ], 500);
+        }
+        catch (\Exception $exception) {
+            if($exception) {
+                return response()->json([
+                    'message' => '5103 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید ',
+                    'message type' => 'error',
+                ], 500);
+            }
         }
     }
 }

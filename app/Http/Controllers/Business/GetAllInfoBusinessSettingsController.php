@@ -22,26 +22,63 @@ class GetAllInfoBusinessSettingsController extends Controller
 
     public function listNoCustomer()
     {
-        $businessNoCustomer = Businessnocustomer::all('no_customer','id');
+        try {
 
-        return response()->json($businessNoCustomer);
+            $businessNoCustomer = Businessnocustomer::all('no_customer', 'id');
 
+            return response()->json($businessNoCustomer);
+
+        }catch (\Exception $exception) {
+            if ($exception) {
+                return response()->json([
+                    'message' => '1301 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید',
+                    'message_type' => 'error',
+                ], 500);
+            }
+        }
     }
 
 
     public function listMonths()
     {
-        $businessMonths = Businessnomonth::all('month','id');
+        try {
 
-        return response()->json($businessMonths);
+            $businessMonths = Businessnomonth::all('month', 'id');
+
+            return response()->json($businessMonths);
+
+        }
+        catch (\Exception $exception){
+            if($exception){
+                return response()->json([
+                    'message' => '1302 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید',
+                    'message_type' => 'error',
+                ], 500);
+
+            }
+        }
 
     }
 
     public function listPercents()
     {
-        $businessPercents = Businesspercent::all('percent','id');
+        try {
 
-        return response()->json($businessPercents);
 
+            $businessPercents = Businesspercent::all('percent', 'id');
+
+            return response()->json($businessPercents);
+
+        }
+        catch (\Exception $exception) {
+            if ($exception) {
+
+                return response()->json([
+                    'message' => '1303 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید',
+                    'message_type' => 'error',
+                ], 500);
+
+            }
+        }
     }
 }

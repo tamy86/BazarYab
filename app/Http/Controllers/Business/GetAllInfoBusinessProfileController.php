@@ -36,13 +36,14 @@ class GetAllInfoBusinessProfileController extends Controller
 
         ]);
 
-        }catch (\Exception $exception)
-            {
+        }catch (\Exception $exception) {
+            if ($exception) {
                 return response()->json([
-                    'message'=>'مشکل در اتصال به دیتا بیس با پشتیبانی تماس بگیرید ',
-                    'message type'=>'error',
-                ],500);
-                }
+                    'message' => ' 1201 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید',
+                    'message type' => 'error',
+                ], 500);
+            }
+        }
     }
 
     public function getPhone(){
@@ -57,10 +58,12 @@ class GetAllInfoBusinessProfileController extends Controller
 
         }catch (\Exception $exception)
         {
-            return response()->json([
-                'message'=>'مشکل در اتصال به دیتا بیس با پشتیبانی تماس بگیرید ',
-                'message type'=>'error',
-            ],500);
+            if($exception) {
+                return response()->json([
+                    'message' => ' 1202 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید ',
+                    'message type' => 'error',
+                ], 500);
+            }
         }
 
 
@@ -78,10 +81,12 @@ class GetAllInfoBusinessProfileController extends Controller
                 'family' => $userFamily,
             ]);
         }catch (\Exception $exception){
-            return response()->json([
-                'message'=>'مشکل در اتصال به دیتا بیس با پشتیبانی تماس بگیرید ',
-                'message type'=>'error',
-            ],500);
+            if($exception) {
+                return response()->json([
+                    'message' => '1203 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید ',
+                    'message type' => 'error',
+                ], 500);
+            }
         }
     }
 

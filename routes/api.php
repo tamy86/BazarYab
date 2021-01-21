@@ -46,8 +46,6 @@ Route::get('/business/gettoken',[GetAllInfoBusinessProfileController::class,'get
 Route::get('/business/getnamefamily',[GetAllInfoBusinessProfileController::class,'getNameFamily']);
 Route::get('/business/getphone',[GetAllInfoBusinessProfileController::class,'getPhone']);
 
-Route::get('/business/businessuserid',[CustomerBusinessController::class,'getBusinessUserId']);
-
 Route::post('/business/searchpresented',[CustomerBusinessController::class,'searchPresented']);
 
 Route::post('/business/newcustomer',[CustomerBusinessController::class,'newCustomer']);
