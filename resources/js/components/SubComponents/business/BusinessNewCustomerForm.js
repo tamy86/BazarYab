@@ -96,7 +96,6 @@ function BusinessNewCustomerForm(){
     const [disableForm,setDisableForm]=React.useState(true);
     const [presentedPhone,setPresentedPhone]=React.useState();
     const [presentedId,setPresentedId]=React.useState();
-    const [businessUserId,setBusinessUserId]=React.useState();
     const [error,setError]=React.useState();
     const [showerror,setShowerror]=React.useState(false);
     const [errormessage,setErrormesasage]=React.useState('');
@@ -107,6 +106,11 @@ function BusinessNewCustomerForm(){
 
     const [searchMessage,setSearchMessage]=React.useState('');
     const [openDialog,setOpenDialog]=React.useState(false);
+
+    const [presentedName,setPresentedName]=React.useState('');
+    const [presentedFamily,setPresentedFamily]=React.useState('');
+    const [showPresentedInfo,setShowPresentedInfo]=React.useState(false);
+    const [colorPresentedMsg,setColorPresentedMsg]=React.useState('');
 
     const classes = useStyles();
 
@@ -132,23 +136,32 @@ function BusinessNewCustomerForm(){
                     if((res.status===200)&&(res.data['Success']===1))
                     {
 
-                        setBusinessUserId(res.data['business_user_id']);
+
                         setPresentedId(res.data['presented_id']);
                         setSearchMessage(res.data['message']);
 
+                        setPresentedName(res.data['presented_name']);
+                        setPresentedFamily(res.data['presented_family']);
+
                         setOpenDialog(true);
                         setDisableForm(false);
+                        setShowPresentedInfo(true);
+                        setColorPresentedMsg('#2ECC71');
 
 
                     }else
                         if((res.status===200)&&(res.data['Success']===2))
                         {
-                            setBusinessUserId(res.data['business_user_id']);
                             setPresentedId(res.data['presented_id']);
                             setSearchMessage(res.data['message']);
 
+                            setPresentedName('');
+                            setPresentedFamily('');
+
                             setOpenDialog(true);
                             setDisableForm(false);
+                            setShowPresentedInfo(false);
+                            setColorPresentedMsg('#F63600');
                         }
             }).catch((error)=>{
                 setError(error.response.status);
@@ -281,15 +294,23 @@ if((!result)&&(!resultCharFarsiName)&&(!resultCharFarsiFamily))
             }
 
 
-            <Dialog open={openDialog} onClose={handleDialogClose} style={textDialog}>
+            <Dialog open={openDialog} onClose={handleDialogClose} style={textDialog} >
 
-                <DialogTitle>
+                <DialogTitle style={{'backgroundColor':colorPresentedMsg}}>
                     <h6 style={textDialog}>مشخصات شماره همراه وارد شده</h6>
                 </DialogTitle>
 
                 <DialogContent>
                     <DialogContentText style={textDialog}>
-                        {searchMessage}
+                        <h4 style={{'color':colorPresentedMsg}}> {searchMessage}</h4>
+                        {showPresentedInfo ?
+                            <div>
+                            نام معرف:
+                            <h4>{presentedName}</h4>
+                            نام خانوادگی معرف:
+                            <h4>{presentedFamily}</h4>
+                            </div>:null
+                        }
                     </DialogContentText>
                 </DialogContent>
 

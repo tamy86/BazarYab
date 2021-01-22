@@ -45,7 +45,7 @@ class CustomerBusinessController extends Controller
 
     if ($presentedExist) {
 
-        $presentedId = Businessnewcustomer::Select('id')
+        $presentedId = Businessnewcustomer::Select('id','name','family')
             ->where('phone', $presentedPhone)
             ->where('businessUserId', $businessUserId)
             ->get();
@@ -53,11 +53,14 @@ class CustomerBusinessController extends Controller
             foreach ($presentedId as $dataPresentedId)
              {
                     $presentedID=$dataPresentedId->id;
+                    $presentedName=$dataPresentedId->name;
+                    $presetedFamily=$dataPresentedId->family;
                   }
 
             return response()->json([
                 'presented_id' => $presentedID,
-                'business_user_id' => $businessUserId,
+                'presented_name' =>$presentedName,
+                'presented_family'=>$presetedFamily,
                 'message' => 'شماره همراه وارد شده جزو مشتریان این کسب و کار میباشد',
                 'message_type' => 'success',
                 'Success' => 1,
@@ -68,7 +71,6 @@ class CustomerBusinessController extends Controller
         if (($presentedExist == false) && ($businessUserId != null)) {
             return response()->json([
                 'presented_id' => null,
-                'business_user_id' => $businessUserId,
                 'message' => 'شماره همراه وارد شده جزو مشتریان این کسب و کار نمیباشد',
                 'message_type' => 'warning',
                 'Success' => 2,
