@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Models\Business\Businessnewcustomer;
+use Illuminate\Support\Facades\DB;
+
 
 class CustomerBusinessController extends Controller
 {
@@ -196,6 +198,44 @@ class CustomerBusinessController extends Controller
     public function searchCustomer(Request $request){
 
        $customerPhone= $request->input('customerphone');
+
+       $getCustomerInfo=DB::select('CALL BusinessGetInfoOfCustomerSearch(?,?)',array($customerPhone,1));
+
+
+           $customerId=$getCustomerInfo[0]->id;
+           $customerName=$getCustomerInfo[0]->name;
+           $customerFamliy=$getCustomerInfo[0]->family;
+           $customerPresentedBy=$getCustomerInfo[0]->presentedId;
+
+
+        $getSearchCustomerInfo=DB::select('CALL BusinessGetCountPresentedCustomerSearch(?)',array($customerId));
+
+
+        if($customerPresentedBy!=null) {
+            $whoPresentedCustomerInfo = DB::select('CALL BusinessGetInfoWhoPresentedCustomerSearch(?)', array($customerPresentedBy));
+            $whoPresentedCustomerName=$whoPresentedCustomerInfo[0]->name;
+            $whoPresentedCustomerFamily=$whoPresentedCustomerInfo[0]->family;
+            $whoPresentedCustomerPhone=$whoPresentedCustomerInfo[0]->phone;
+        }
+        else{
+            $whoPresentedCustomerName='معرف نداشته است';
+            $whoPresentedCustomerFamily='معرف نداشته است';
+            $whoPresentedCustomerPhone='معرف نداشته است';
+
+        }
+        $infoWhoPresentedByCustomerSearch=DB::select('CALL BusinessInfoWhoPresentedByCustomerSearch(?,?)',array($customerId,1));
+
+
+       return response()->json([
+
+           'customerSearchName'=>$customerName,
+           'customerSearchFamily'=>$customerFamliy,
+           'sumCusotmerPresented'=>$getSearchCustomerInfo[0]->sum_customer_presented,
+           'whoPresentedCustomerSearchName'=>$whoPresentedCustomerName,
+           'whoPresentedCustomerSearchFamily'=>$whoPresentedCustomerFamily,
+           'whoPresentedCustomerSearchPhone'=>$whoPresentedCustomerPhone,
+           'whoPresentedByCustomerSearch'=>$infoWhoPresentedByCustomerSearch,
+       ]);
 
     }
 }
