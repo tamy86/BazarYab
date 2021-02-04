@@ -7,10 +7,17 @@ use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Models\Business\Businessnewcustomer;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Auth;
+use function PHPUnit\Framework\isEmpty;
 
 class CustomerBusinessController extends Controller
 {
+
+    public function __construct() {
+        $this->middleware('auth:businessusers', ['except' => ['checkVerify', 'getVerify']]);
+        Auth::shouldUse('businessusers');
+    }
+
 
     public function searchPresented(Request $request){
 
@@ -34,7 +41,7 @@ class CustomerBusinessController extends Controller
 
         try{
 
-        $presentedPhone=$request->input('presentedphone');
+        $presentedPhone=$request->input('phone');
 
 
 
@@ -195,47 +202,91 @@ class CustomerBusinessController extends Controller
 
 
 
-    public function searchCustomer(Request $request){
+    public function searchCustomer(Request $request)
+    {
 
-       $customerPhone= $request->input('customerphone');
-
-       $getCustomerInfo=DB::select('CALL BusinessGetInfoOfCustomerSearch(?,?)',array($customerPhone,1));
-
-
-           $customerId=$getCustomerInfo[0]->id;
-           $customerName=$getCustomerInfo[0]->name;
-           $customerFamliy=$getCustomerInfo[0]->family;
-           $customerPresentedBy=$getCustomerInfo[0]->presentedId;
+        $customerPhone = $request->input('phone');
 
 
-        $getSearchCustomerInfo=DB::select('CALL BusinessGetCountPresentedCustomerSearch(?)',array($customerId));
+        try {
 
+            $businesUserId = auth()->user()->id;
+        } catch (\Exception $exception) {
+            if ($exception) {
+                return response()->json([
+                    'message' => '1104 خطای عدم دسترسی یا مشکل ارتباط با سرور',
+                    'message_type' => 'error',
 
-        if($customerPresentedBy!=null) {
-            $whoPresentedCustomerInfo = DB::select('CALL BusinessGetInfoWhoPresentedCustomerSearch(?)', array($customerPresentedBy));
-            $whoPresentedCustomerName=$whoPresentedCustomerInfo[0]->name;
-            $whoPresentedCustomerFamily=$whoPresentedCustomerInfo[0]->family;
-            $whoPresentedCustomerPhone=$whoPresentedCustomerInfo[0]->phone;
+                ], 401);
+            }
         }
-        else{
-            $whoPresentedCustomerName='معرف نداشته است';
-            $whoPresentedCustomerFamily='معرف نداشته است';
-            $whoPresentedCustomerPhone='معرف نداشته است';
+
+//       $businesUserId=auth()->user()->id;
+
+        try {
+
+            $getCustomerInfo = DB::select('CALL BusinessGetInfoOfCustomerSearch(?,?)', array($customerPhone, $businesUserId));
+
+            if ($getCustomerInfo != null) {
+                $customerId = $getCustomerInfo[0]->id;
+                $customerName = $getCustomerInfo[0]->name;
+                $customerFamliy = $getCustomerInfo[0]->family;
+                $customerPresentedBy = $getCustomerInfo[0]->presentedId;
+
+            } else {
+
+                $customerName = 'یافت نشد';
+                $customerFamliy = 'یافت نشد';
+                $customerId = null;
+                $customerPresentedBy = null;
+            }
+
+
+            if ($customerId != null) {
+                $getSearchCustomerInfo = DB::select('CALL BusinessGetCountPresentedCustomerSearch(?)', array($customerId));
+                $sumCustomerPresented = $getSearchCustomerInfo[0]->sum_customer_presented;
+            } else {
+                $sumCustomerPresented = 0;
+            }
+
+
+            if ($customerPresentedBy != null) {
+                $whoPresentedCustomerInfo = DB::select('CALL BusinessGetInfoWhoPresentedCustomerSearch(?)', array($customerPresentedBy));
+                $whoPresentedCustomerName = $whoPresentedCustomerInfo[0]->name;
+                $whoPresentedCustomerFamily = $whoPresentedCustomerInfo[0]->family;
+                $whoPresentedCustomerPhone = $whoPresentedCustomerInfo[0]->phone;
+            } else {
+                $whoPresentedCustomerName = 'معرف نداشته است';
+                $whoPresentedCustomerFamily = 'معرف نداشته است';
+                $whoPresentedCustomerPhone = 'معرف نداشته است';
+
+            }
+            $infoWhoPresentedByCustomerSearch = DB::select('CALL BusinessInfoWhoPresentedByCustomerSearch(?,?)', array($customerId, $businesUserId));
+
+
+            return response()->json([
+
+                'customerSearchName' => $customerName,
+                'customerSearchFamily' => $customerFamliy,
+                'sumCusotmerPresented' => $sumCustomerPresented,
+                'whoPresentedCustomerSearchName' => $whoPresentedCustomerName,
+                'whoPresentedCustomerSearchFamily' => $whoPresentedCustomerFamily,
+                'whoPresentedCustomerSearchPhone' => $whoPresentedCustomerPhone,
+                'whoPresentedByCustomerSearch' => $infoWhoPresentedByCustomerSearch,
+
+            ]);
 
         }
-        $infoWhoPresentedByCustomerSearch=DB::select('CALL BusinessInfoWhoPresentedByCustomerSearch(?,?)',array($customerId,1));
+        catch (\Exception $exception) {
 
+            if($exception) {
+                return response()->json([
+                    'message' => '1105 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید',
+                    'message_type' => 'error',
 
-       return response()->json([
+                ]);
+            }
 
-           'customerSearchName'=>$customerName,
-           'customerSearchFamily'=>$customerFamliy,
-           'sumCusotmerPresented'=>$getSearchCustomerInfo[0]->sum_customer_presented,
-           'whoPresentedCustomerSearchName'=>$whoPresentedCustomerName,
-           'whoPresentedCustomerSearchFamily'=>$whoPresentedCustomerFamily,
-           'whoPresentedCustomerSearchPhone'=>$whoPresentedCustomerPhone,
-           'whoPresentedByCustomerSearch'=>$infoWhoPresentedByCustomerSearch,
-       ]);
-
+        }
     }
 }

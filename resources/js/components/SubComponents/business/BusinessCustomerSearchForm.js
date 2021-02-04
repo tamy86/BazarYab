@@ -169,7 +169,7 @@ function BusinessCustomerSearchForm(){
         const mobile = /^(09)(12|19|35|36|37|38|39|32|21|22|31|34|13|14|18|17|16|15|11|10|20|90|91|92|93|94|01|02|03|04|05|30|33|)\d{7}$/g;
         const result = customerPhoneNo.match(mobile);
         if ((result)&&(customerPhoneNo !== '')){
-            axios.post('/api/business/searchcustomer',{'customerphone':customerPhoneNo}) .then((res)=>
+            axios.post('/api/business/searchcustomer',{'phone':customerPhoneNo}) .then((res)=>
                 {
                     setCustomerName(res.data['customerSearchName']);
                     setCustomerFamily(res.data['customerSearchFamily']);

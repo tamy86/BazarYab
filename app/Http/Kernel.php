@@ -66,5 +66,7 @@ class Kernel extends HttpKernel
         'checkverify'=>\App\Http\Middleware\PublicCheck\CheckVerifyCode::class,
         'checkphoneuser'=>\App\Http\Middleware\PublicCheck\CheckPhoneCustomerUsers::class,
         'checkverifyuser'=>\App\Http\Middleware\publicCheck\CheckVerifyCodeUsers::class,
+        'checkallmobile'=>\App\Http\Middleware\publicCheck\CheckMobilePhone::class,
+        'checknewcustomerform'=>\App\Http\Middleware\publicCheck\CheckNewCustomerForm::class,
     ];
 }

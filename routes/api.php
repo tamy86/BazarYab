@@ -46,11 +46,11 @@ Route::get('/business/gettoken',[GetAllInfoBusinessProfileController::class,'get
 Route::get('/business/getnamefamily',[GetAllInfoBusinessProfileController::class,'getNameFamily']);
 Route::get('/business/getphone',[GetAllInfoBusinessProfileController::class,'getPhone']);
 
-Route::post('/business/searchpresented',[CustomerBusinessController::class,'searchPresented']);
+Route::post('/business/searchpresented',[CustomerBusinessController::class,'searchPresented'])->middleware('checkallmobile');
 
-Route::post('/business/newcustomer',[CustomerBusinessController::class,'newCustomer']);
+Route::post('/business/newcustomer',[CustomerBusinessController::class,'newCustomer'])->middleware('checknewcustomerform');
 
-Route::post('/business/searchcustomer',[CustomerBusinessController::class,'searchCustomer']);
+Route::post('/business/searchcustomer',[CustomerBusinessController::class,'searchCustomer'])->middleware('checkallmobile');
 
 
 
