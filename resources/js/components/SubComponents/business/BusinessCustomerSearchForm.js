@@ -136,6 +136,7 @@ function BusinessCustomerSearchForm(){
     const [customerPhoneNo,setCustomerPhoneNo]=useState();
     const [showerror,setShowerror]=React.useState(false);
     const [errormessage,setErrormesasage]=React.useState('');
+    const [error,setError]=React.useState();
 
     const[customerName,setCustomerName]=React.useState();
     const[customerFamily,setCustomerFamily]=React.useState();
@@ -180,8 +181,18 @@ function BusinessCustomerSearchForm(){
 
                     setCustomerPresented(res.data['whoPresentedByCustomerSearch']);
 
-                })
-        }else{
+                }).catch((error) => {
+                setError(error.response.status);
+                setErrormesasage(
+                    {
+                        msg: error.response.data['message'],
+                        key: Math.random(),
+                        errortype: error.response.data['message type'],
+                    });
+                setShowerror(true);
+            });
+        }
+        else{
             setErrormesasage(
                 {
                     msg: 'شماره همراه صحیح نمیباشد',
