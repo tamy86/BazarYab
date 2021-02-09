@@ -256,7 +256,7 @@ if((!result)&&(!resultCharFarsiName)&&(!resultCharFarsiFamily))
                     'presentedphone': presentedPhone,
                 }).then((res) => {
 
-                    if ((res.data['Success'] === 1))
+                    if ((res.data['Success'] === 1)||(res.status===200))
                     {
                         setErrormesasage(
                             {

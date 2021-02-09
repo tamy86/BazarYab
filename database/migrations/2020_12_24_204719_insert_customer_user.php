@@ -26,6 +26,7 @@ class InsertCustomerUser extends Migration
             $table->string('nationlacode')->nullable()->index();
             $table->string('cartno')->nullable()->index();
             $table->boolean('signin')->index();
+            $table->smallInteger('status')->index();
             $table->timestamps();
         });
     }

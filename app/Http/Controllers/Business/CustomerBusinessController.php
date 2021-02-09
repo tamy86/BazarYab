@@ -135,6 +135,7 @@ class CustomerBusinessController extends Controller
         $customerPhone=$request->input('customerphone');
         $customerName=$request->input('customername');
         $customerFamily=$request->input('customerfamily');
+        $customerShopingPrice=0;
         $presentedId=$request->input('presentedid');
         $presentedPhone=$request->input('presentedphone');
 
@@ -158,6 +159,7 @@ class CustomerBusinessController extends Controller
                 $userBusinessRegister->phone = $customerPhone;
                 $userBusinessRegister->name = $customerName;
                 $userBusinessRegister->family = $customerFamily;
+                $userBusinessRegister->shopingPrice = $customerShopingPrice;
                 $userBusinessRegister->created_at = new \DateTime();
                 $userBusinessRegister->updated_at = new \DateTime();
                 $userBusinessRegister->save();

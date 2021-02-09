@@ -28,6 +28,7 @@ class InsertBusinessUser extends Migration
             $table->string('address')->nullable()->index();
             $table->string('cartno')->nullable()->index();
             $table->boolean('signin')->index();
+            $table->smallInteger('status')->index();
             $table->timestamps();
         });
     }

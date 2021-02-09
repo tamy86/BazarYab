@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class InsertBusinessNewCustomer extends Migration
+class InsertBusinessSettingDiscountForm extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,14 @@ class InsertBusinessNewCustomer extends Migration
      */
     public function up()
     {
-        Schema::create('businessnewcustomers', function (Blueprint $table) {
-            $table->id()->autoIncrement()->index();
+        Schema::create('businesssettingform', function (Blueprint $table) {
+            $table->id();
             $table->integer('businessUserId')->unsigned()->index();
             $table->foreign('businessUserId')->references('id')->on('businessusers');
-            $table->integer('presentedId')->nullable()->index();
-            $table->string('phone')->index();
-            $table->string('name')->index();
-            $table->string('family')->index();
-            $table->float('shopingPrice')->index();
+            $table->integer('month')->index();
+            $table->integer('percent')->index();
+            $table->integer('noCustomer')->index();
+            $table->boolean('editStatus')->index();
             $table->timestamps();
         });
     }
@@ -33,6 +32,6 @@ class InsertBusinessNewCustomer extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('businessnewcustomers');
+        Schema::dropIfExists('businesssettingform');
     }
 }

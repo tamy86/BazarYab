@@ -39,6 +39,7 @@ class RegisterBusinessController extends Controller
                 $userBusinessRegister->bussinesscategoryId = $businessType;
                 $userBusinessRegister->verify = bcrypt($verifyCode);
                 $userBusinessRegister->signin = 0;
+                $userBusinessRegister->status = 0;
                 $userBusinessRegister->ipaddress = $ipBusiness;
                 $userBusinessRegister->created_at = new \DateTime();
                 $userBusinessRegister->updated_at = new \DateTime();
@@ -102,6 +103,7 @@ class RegisterBusinessController extends Controller
                 return response()->json([
                     'message'=>'1501 خطا در ارتباط با سرور یا داده وروودی لطفا با پشتیبانی تماس بگیرید',
                     'message type'=>'error',
+                    'ss'=>$phoneexist,
                 ],500);
             }
         }
@@ -142,9 +144,8 @@ class RegisterBusinessController extends Controller
                 ], 401);
             }
 
-            Businessuser::where('phone', $request->input('phone'))->update(['token' => $token]);
-
             return $this->createNewToken($token);
+            Businessuser::where('phone', $request->input('phone'))->update(['token' => $token]);
 
         }catch (\Exception $exception)
         {

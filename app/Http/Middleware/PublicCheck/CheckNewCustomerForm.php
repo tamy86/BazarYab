@@ -31,7 +31,7 @@ class CheckNewCustomerForm
             return response()->json([
                 'message'=>' ! فرمت شماره همراه وارد شده صحیح نمی باشد',
                 'Success'=>0,
-                'message type' =>'warning',
+                'message_type' =>'warning',
             ],400);
         }
         else
@@ -40,16 +40,16 @@ class CheckNewCustomerForm
                 return response()->json([
                     'message'=>'نام یا نام خانوادگی با فرمت صحیح وارد نشده است (حروف فارسی)',
                     'Success'=>0,
-                    'message type' =>'warning',
+                    'message_type' =>'warning',
                 ],400);
 
             }else
-                if(!(preg_match($numbers,$presentedId))){
+                if((!(preg_match($numbers,$presentedId)))and(!($presentedId==null))){
 
                     return response()->json([
                         'message'=>'اطلاعات مربوط به معرف صحیح نمیباشد',
                         'Success'=>0,
-                        'message type' =>'warning',
+                        'message_type' =>'warning',
                     ],400);
                 }
                 else{
